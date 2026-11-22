@@ -800,12 +800,14 @@ function updateUser() {
   : '<button class="btn small" onclick="openAuth()">Войти</button>';
 }
 
-supabaseClient.auth.onAuthStateChange(async (event,session) => {
+supabaseClient.auth.onAuthStateChange((event, session) => {
  currentUser = session?.user || null;
  updateUser();
 
  if (currentUser) {
-  await loadMemories();
+  setTimeout(() => {
+   loadMemories();
+  }, 0);
  } else {
   folders = [];
   currentId = null;
@@ -814,7 +816,7 @@ supabaseClient.auth.onAuthStateChange(async (event,session) => {
   openFolder(null);
  }
 });
-
+  
 document.querySelectorAll(".modal").forEach(modal => {
  modal.addEventListener("click",event => {
   if (event.target === modal) modal.classList.remove("open");
