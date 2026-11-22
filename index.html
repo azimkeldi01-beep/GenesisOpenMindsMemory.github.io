@@ -793,6 +793,14 @@ function renderFolders() {
       <p>${escapeHTML((memory.description || "Без описания").slice(0,110))}</p>
       <div class="memory-date">${new Date(memory.created_at).toLocaleDateString("ru-RU")}</div>
     </article>
+    <button
+  type="button"
+  class="btn secondary"
+  data-view-memory="${escapeHTML(memory.id)}"
+  style="margin-top:12px"
+>
+  Просмотреть
+</button>
   `).join("");
 }
 
@@ -816,12 +824,18 @@ function renderSharedArchive() {
     </article>
   `).join("");
 }
-
-$("#myMemoryGrid").addEventListener("click",event => {
+$("#myMemoryGrid").addEventListener("click", event => {
+  const viewButton = event.target.closest("[data-view-memory]");
+  if (viewButton) {
+    const memory = folders.find(
+      item => item.id === viewButton.dataset.viewMemory
+    );
+    if (memory) showMemory(memory);
+    return;
+  }
   const card = event.target.closest("[data-memory]");
   if (card) openFolder(card.dataset.memory);
 });
-
 $("#sharedArchiveGrid").addEventListener("click",event => {
   const card = event.target.closest("[data-shared-memory]");
   if (!card) return;
