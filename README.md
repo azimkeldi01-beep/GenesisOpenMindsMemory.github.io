@@ -804,11 +804,13 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
  currentUser = session?.user || null;
  updateUser();
 
- if (currentUser) {
-  setTimeout(() => {
-   loadMemories();
-  }, 0);
- } else {
+ if (event === "INITIAL_SESSION" || event === "SIGNED_IN") {
+  if (currentUser) {
+   setTimeout(() => loadMemories(), 0);
+  }
+ }
+
+ if (event === "SIGNED_OUT") {
   folders = [];
   currentId = null;
   renderFolders();
