@@ -165,7 +165,7 @@ footer{padding:28px 6%;text-align:center;background:#fff;color:var(--muted);font
    <p class="hero-description">Личное цифровое пространство для сохранения воспоминаний. Текст, фотографии и музыка объединяются в единую историю, отражающую настроение и атмосферу каждого дня.</p>
    <div class="hero-buttons">
     <button class="btn primary" onclick="goToStudio()">Создать воспоминание</button>
-    <button class="btn" onclick="openAuth()">Войти в аккаунт</button>
+    <button class="btn" id="heroLoginButton" onclick="openAuth()">Войти в аккаунт</button>
    </div>
   </div>
   <div class="hero-visual">
@@ -798,6 +798,8 @@ function updateUser() {
  $("#userBox").innerHTML = currentUser
   ? `<span style="font-weight:600">${escapeHTML(currentUser.user_metadata?.name || currentUser.email)}</span><button class="btn small" onclick="logout()">Выйти</button>`
   : '<button class="btn small" onclick="openAuth()">Войти</button>';
+
+ $("#heroLoginButton").hidden = !!currentUser;
 }
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
