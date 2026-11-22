@@ -1,589 +1,994 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4263eb">
 <title>Genesis — Open Minds Memory</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f3f8ff;
-  --panel:#ffffff;
-  --panel2:#eaf3ff;
-  --blue:#3478f6;
-  --blue-dark:#245ac4;
-  --lime:#c8f169;
-  --lime-dark:#a8d94b;
-  --text:#17243a;
-  --muted:#687991;
-  --border:#dce8f7;
-  --shadow:0 12px 34px rgba(45,91,150,.09);
+ --primary:#4263eb;--primary-dark:#304fc5;--lime:#c8f169;
+ --bg:#f5f7fb;--surface:#fff;--text:#182238;
+ --muted:#8490a5;--border:#e8edf4;
+ --shadow:0 8px 30px rgba(35,55,90,.06);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:linear-gradient(135deg,#f5f9ff 0%,#edf6ff 55%,#f7fbea 100%);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}
-button,input,textarea{font:inherit}
-button{border:0;border-radius:14px;padding:12px 18px;background:var(--blue);color:#fff;cursor:pointer;font-weight:650;box-shadow:0 5px 14px rgba(52,120,246,.15);transition:transform .18s,filter .18s,box-shadow .18s}
-button:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 8px 18px rgba(52,120,246,.2)}
-button:active{transform:translateY(0)}
-button.secondary{background:#edf4ff;color:#315b9d;border:1px solid #d8e6fa;box-shadow:none}
-button.gold{background:var(--lime);color:#26351a;box-shadow:0 5px 14px rgba(168,217,75,.2)}
-input,textarea{width:100%;padding:13px 15px;margin:7px 0 14px;background:#fbfdff;color:var(--text);border:1px solid var(--border);border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(52,120,246,.1)}
-textarea{min-height:110px;resize:vertical}
-label{font-size:13px;color:var(--muted);font-weight:650}
-.hidden{display:none!important}
-#authScreen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 10%,#dceaff 0,transparent 36%),radial-gradient(circle at 90% 90%,#e7f8c9 0,transparent 34%)}
-.auth-card{width:min(440px,100%);padding:34px;background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:26px;box-shadow:0 24px 75px rgba(45,91,150,.14)}
-.logo{font-size:34px;font-weight:850;color:var(--blue);letter-spacing:3px}
-.subtitle{color:var(--muted);margin:8px 0 25px;line-height:1.55}
-#app{min-height:100vh}
-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px clamp(20px,5vw,76px);border-bottom:1px solid var(--border);background:rgba(255,255,255,.88);backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
-header .logo{font-size:23px}
-.layout{display:flex;width:min(1600px,100%);min-height:calc(100vh - 70px);margin:0 auto}
-aside{width:255px;flex:0 0 255px;padding:28px 18px;border-right:1px solid var(--border);background:rgba(255,255,255,.48)}
-.nav-btn{width:100%;text-align:left;margin:5px 0;background:transparent;color:#63748d;box-shadow:none;border-radius:14px;padding:13px 15px}
-.nav-btn.active,.nav-btn:hover{background:#eaf2ff;color:var(--blue-dark);box-shadow:none;transform:none}
-main{flex:1;padding:clamp(28px,4vw,58px);min-width:0;max-width:1320px;margin:0 auto}
-h1{font-size:clamp(27px,3vw,36px);letter-spacing:-.7px;margin:0 0 9px}
-h2{font-size:21px;margin:0 0 18px}
-.muted{color:var(--muted);line-height:1.65}
-.section{display:none}.section.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:clamp(18px,2.5vw,28px);margin:22px 0;box-shadow:var(--shadow)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px;margin-top:22px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:21px;padding:22px;min-width:0;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
-.card:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(45,91,150,.13)}
-.card h3{margin:0 0 10px;overflow-wrap:anywhere;font-size:18px}
-.card p{color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
-.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:0}
-.small{font-size:12px;color:var(--muted)}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.actions button{font-size:13px;padding:10px 14px}
-.file-row{padding:14px 16px;background:#f4f8ff;border:1px solid #e3edfa;border-radius:15px;margin:9px 0;display:flex;justify-content:space-between;gap:12px;align-items:center;overflow-wrap:anywhere}
-#message{position:fixed;bottom:22px;right:22px;z-index:20;background:var(--lime);color:#26351a;padding:14px 20px;border-radius:15px;display:none;max-width:min(440px,90%);box-shadow:var(--shadow);font-weight:650}
-.empty{padding:34px 20px;text-align:center;color:var(--muted);background:rgba(255,255,255,.65);border:1px dashed #cbdcf0;border-radius:18px}
-hr{border:0;border-top:1px solid var(--border);margin:20px 0}
-@media(min-width:1500px){main{padding:58px 68px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:900px){aside{width:220px;flex-basis:220px}main{padding:28px}}
-@media(max-width:700px){header{padding:13px 15px;gap:10px}header .logo{font-size:19px}.layout{display:block}aside{width:100%;min-height:0;display:flex;gap:5px;overflow-x:auto;padding:9px 12px;border-right:0;border-bottom:1px solid var(--border)}.nav-btn{width:auto;flex:0 0 auto;white-space:nowrap;padding:11px 13px;margin:0}main{padding:20px 15px}.panel{padding:17px}.grid{grid-template-columns:1fr}.auth-card{padding:25px;border-radius:22px}header .row{gap:7px}#userEmail{max-width:120px;overflow:hidden;text-overflow:ellipsis}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+.hidden,[hidden]{display:none!important}
+.container{width:min(1180px,calc(100% - 36px));margin:auto}
+header{background:#ffffffed;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{font-weight:800;font-size:21px;letter-spacing:-1px}
+.brand span{color:var(--primary)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.user-email{font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:11px 17px;border-radius:10px;font-size:13px;font-weight:650;transition:.2s}
+.btn:hover{transform:translateY(-1px);background:#f0f3f8}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.primary:hover{background:var(--primary-dark)}
+.btn.lime{background:var(--lime);border-color:var(--lime);color:#26351a}
+.btn.danger{color:#bd4a4a}
+.btn.small{padding:8px 12px;font-size:12px}
+.btn.full{width:100%;margin-top:12px}
+.hero{padding:75px 0;background:linear-gradient(120deg,#3456d9,#5477f4);color:#fff;overflow:hidden}
+.hero-inner{display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:40px}
+.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;opacity:.75}
+.hero h1{font-size:clamp(36px,6vw,65px);line-height:1.05;margin:18px 0;letter-spacing:-3px}
+.hero p{max-width:570px;color:#e4eaff;line-height:1.8;font-size:14px}
+.hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.hero-art{display:grid;grid-template-columns:1fr 1fr;gap:12px;transform:rotate(-3deg)}
+.art-card{height:150px;border-radius:18px;background:linear-gradient(140deg,#d8e4ff,#9cb4ff);box-shadow:0 15px 35px #172e7c30}
+.art-card:nth-child(2){background:linear-gradient(140deg,#c8f169,#91b947);margin-top:25px}
+.art-card:nth-child(3){background:linear-gradient(140deg,#b9caff,#738ee8);margin-top:-15px}
+.art-card:nth-child(4){background:linear-gradient(140deg,#f0f3ff,#b9c8f6)}
+section{padding:55px 0}
+.section-title{margin-bottom:25px}
+.section-title h2{font-size:clamp(27px,4vw,38px);letter-spacing:-1.5px;margin:8px 0}
+.section-title p{font-size:13px;color:var(--muted)}
+.eyebrow.blue{color:var(--primary);opacity:1}
+.studio-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:17px;margin:0 0 15px}
+label{display:block;font-size:12px;font-weight:650;margin:14px 0 7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--text);font-size:13px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #4263eb18}
+textarea{min-height:120px;resize:vertical}
+.palette{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.color{width:28px;height:28px;border-radius:50%;border:2px solid white;outline:1px solid var(--border);padding:0}
+.color.active{outline:2px solid var(--primary)}
+.folder-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}
+.folder-item{border:1px solid var(--border);border-radius:12px;padding:13px 8px;text-align:center;cursor:pointer;min-width:0}
+.folder-item:hover,.folder-item.active{border-color:var(--primary);background:#f1f4ff}
+.folder-icon{width:42px;height:30px;border-radius:5px;background:var(--folder-color);margin:0 auto 9px;position:relative}
+.folder-icon:before{content:"";position:absolute;top:-5px;left:0;width:18px;height:8px;background:inherit;border-radius:4px 4px 0 0}
+.folder-item strong{font-size:11px;display:block;overflow-wrap:anywhere}
+.folder-item small{font-size:10px;color:var(--muted)}
+.empty{text-align:center;padding:55px 15px;color:var(--muted)}
+.empty-icon{font-size:38px;margin-bottom:10px}
+.workspace-head{display:flex;align-items:center;gap:13px;border-bottom:1px solid var(--border);padding-bottom:17px;margin-bottom:15px}
+.workspace-head h3{margin:0}
+.workspace-head p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.drop{border:1px dashed #aab6ca;border-radius:12px;padding:22px;text-align:center;background:#f8f9fc;margin-top:15px;color:var(--muted);font-size:12px}
+.drop input{display:none}
+.file-list{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.file-item{background:#edf1fa;border-radius:9px;padding:9px 10px;font-size:11px;max-width:190px;overflow-wrap:anywhere}
+.file-item button{border:0;background:none;color:#c44;margin-left:7px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
+.archive{background:#edf1f8}
+.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.day-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:.2s}
+.day-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.day-cover{height:135px;background:var(--cover-color,#4263eb);display:grid;place-items:center;color:#fff;font-size:35px;background-size:cover;background-position:center}
+.day-info{padding:15px}
+.day-info h3{font-size:15px;margin:0 0 5px;overflow-wrap:anywhere}
+.day-info small{font-size:10px;color:var(--muted)}
+.day-info p{font-size:12px;color:#65718a;margin:9px 0 0;overflow-wrap:anywhere}
+.notice{padding:18px;background:#f2f5fc;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:13px;text-align:center}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:11px;background:#fff}
+.modal{position:fixed;inset:0;background:#101b35a8;z-index:30;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-box{width:min(440px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:25px;position:relative}
+.modal-box.wide{width:min(850px,100%);padding:0}
+.close{position:absolute;right:12px;top:12px;border:0;background:#edf1f8;border-radius:8px;width:32px;height:32px;font-size:20px;z-index:2}
+.tabs{display:flex;background:#edf1f8;border-radius:10px;padding:4px;margin:17px 0}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:8px;font-size:12px}
+.tabs button.active{background:#fff;color:var(--primary);font-weight:700}
+.status{font-size:12px;color:var(--muted);min-height:18px;margin:12px 0}
+.status.error{color:#bd4a4a}
+.status.success{color:#39815e}
+.memory-layout{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
+.memory-photo{background:#4263eb;min-height:300px;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
+.memory-content{padding:28px;background:#f7f8fc;overflow-wrap:anywhere}
+.memory-content h2{font-size:26px}
+.memory-content p{font-size:13px;white-space:pre-wrap;line-height:1.7}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#182238;color:#fff;padding:12px 18px;border-radius:10px;font-size:12px;opacity:0;transition:.2s;z-index:50;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:800px){.hero-inner{grid-template-columns:1fr}.hero-art{max-width:420px}.studio-grid{grid-template-columns:1fr}}
+@media(max-width:550px){.nav{min-height:65px}.brand{font-size:17px}.user-email{max-width:100px}.hero{padding:50px 0}.hero h1{letter-spacing:-2px}.art-card{height:110px}.row{grid-template-columns:1fr;gap:0}.memory-layout{grid-template-columns:1fr}.memory-photo{min-height:200px}.memory-content{padding:20px}.card{padding:16px}.actions .btn{flex:1}.archive-grid{grid-template-columns:1fr 1fr}.day-cover{height:105px}.day-info{padding:11px}}
+@media(max-width:350px){.archive-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div id="authScreen">
-  <div class="auth-card">
-    <div class="logo">GENESIS ✨</div>
-    <div class="subtitle">Open Minds Memory — твоя история начинается здесь</div>
-    <div id="loginForm">
-      <h2>👋 Добро пожаловать</h2>
-      <label>Email</label>
-      <input id="loginEmail" type="email" placeholder="your@email.com">
-      <label>Пароль</label>
-      <input id="loginPassword" type="password" placeholder="Пароль">
-      <button style="width:100%" onclick="login()">🔐 Войти</button>
-      <p class="small">Нет аккаунта? <a href="#" onclick="toggleAuth(true)" style="color:var(--blue)">Зарегистрироваться</a></p>
-    </div>
-    <div id="registerForm" class="hidden">
-      <h2>🌱 Создать аккаунт</h2>
-      <label>Email</label>
-      <input id="registerEmail" type="email" placeholder="your@email.com">
-      <label>Пароль</label>
-      <input id="registerPassword" type="password" placeholder="Минимум 6 символов">
-      <button style="width:100%" onclick="register()">✨ Зарегистрироваться</button>
-      <p class="small">Уже есть аккаунт? <a href="#" onclick="toggleAuth(false)" style="color:var(--blue)">Войти</a></p>
-    </div>
+<header>
+ <div class="container nav">
+  <a class="brand" href="#home">GENESIS<span>✦</span></a>
+  <div class="nav-right" id="userBox">
+   <button class="btn small" onclick="openAuth('login')">Войти</button>
   </div>
+ </div>
+</header>
+
+<section class="hero" id="home">
+ <div class="container hero-inner">
+  <div>
+   <div class="eyebrow">GENESIS OPEN MINDS · DIGITAL MEMORY</div>
+   <h1>Твои моменты.<br>Твоя история.</h1>
+   <p>Личное облачное пространство для воспоминаний. Сохраняй фотографии, тексты, музыку и важные моменты своей жизни в одном месте.</p>
+   <div class="hero-buttons">
+    <button class="btn lime" onclick="goToWorkspace()">Создать воспоминание</button>
+    <button class="btn" onclick="openAuth('register')">Создать аккаунт</button>
+   </div>
+  </div>
+  <div class="hero-art">
+   <div class="art-card"></div><div class="art-card"></div>
+   <div class="art-card"></div><div class="art-card"></div>
+  </div>
+ </div>
+</section>
+
+<section id="studio">
+ <div class="container">
+  <div class="section-title">
+   <div class="eyebrow blue">01 / WORKSPACE</div>
+   <h2>Рабочее пространство</h2>
+   <p>Создавай папки и заполняй их своими воспоминаниями.</p>
+  </div>
+
+  <div id="signedOutNotice" class="notice">
+   Чтобы пользоваться пространством, войди или зарегистрируйся.
+   <button class="btn primary small" onclick="openAuth('login')">Войти</button>
+  </div>
+
+  <div class="studio-grid" id="privateStudio" hidden>
+   <div class="card">
+    <h3>Создать папку</h3>
+    <form id="folderForm">
+     <label for="folderName">Название папки</label>
+     <input id="folderName" maxlength="60" placeholder="Например, Лето 2026" required>
+     <label>Цвет папки</label>
+     <div class="palette" id="palette"></div>
+     <button class="btn primary full" id="createFolderBtn" type="submit">＋ Создать папку</button>
+    </form>
+    <h3 style="margin-top:28px">Мои папки</h3>
+    <div class="folder-list" id="folderList"></div>
+   </div>
+
+   <div class="card" id="workspace">
+    <div class="empty" id="empty">
+     <div class="empty-icon">▤</div>
+     <h3>Рабочее пространство пусто</h3>
+     <p>Сначала создай папку слева.</p>
+    </div>
+
+    <div id="editor" hidden>
+     <div class="workspace-head">
+      <div class="folder-icon" id="editorIcon"></div>
+      <div><h3 id="editorTitle"></h3><p id="editorDate"></p></div>
+     </div>
+
+     <label for="dayText">Описание воспоминания</label>
+     <textarea id="dayText" maxlength="10000" placeholder="Расскажи, что произошло..."></textarea>
+
+     <div class="drop" id="drop">
+      <p><b>Добавить фотографии, видео или аудио</b></p>
+      <p>Выбери файлы со своего устройства.</p>
+      <button class="btn small" type="button" id="chooseFiles">Выбрать файлы</button>
+      <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple>
+     </div>
+     <div class="file-list" id="fileList"></div>
+
+     <div class="row">
+      <div>
+       <label for="songUrl">Ссылка на музыку</label>
+       <input id="songUrl" type="url" placeholder="https://...">
+      </div>
+      <div>
+       <label for="songInfo">Название и исполнитель</label>
+       <input id="songInfo" maxlength="180" placeholder="Название песни">
+      </div>
+     </div>
+
+     <div class="row">
+      <div>
+       <label for="mood">Настроение</label>
+       <select id="mood">
+        <option value="">Не выбрано</option>
+        <option>Радость</option><option>Спокойствие</option>
+        <option>Ностальгия</option><option>Вдохновение</option>
+        <option>Грусть</option><option>Приключение</option>
+       </select>
+      </div>
+      <div>
+       <label for="weather">Атмосфера</label>
+       <select id="weather">
+        <option value="">Не выбрано</option>
+        <option>Солнечно</option><option>Облачно</option>
+        <option>Дождливо</option><option>Снежно</option>
+        <option>Вечер</option><option>Ночь</option>
+       </select>
+      </div>
+     </div>
+
+     <p class="status" id="saveStatus" aria-live="polite"></p>
+     <div class="actions">
+      <button class="btn danger" type="button" onclick="deleteCurrent()">Удалить папку</button>
+      <button class="btn primary" type="button" id="saveBtn" onclick="saveCurrent()">Сохранить воспоминание</button>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="archive" id="archive">
+ <div class="container">
+  <div class="section-title">
+   <div class="eyebrow blue">02 / PERSONAL ARCHIVE</div>
+   <h2>Мой дневник</h2>
+   <p>Все твои папки и сохранённые воспоминания в одном месте.</p>
+  </div>
+  <div id="archiveSignedOut" class="notice">
+   Дневник доступен после входа в аккаунт.
+   <button class="btn primary small" onclick="openAuth('login')">Войти</button>
+  </div>
+  <div class="archive-grid" id="archiveGrid" hidden></div>
+ </div>
+</section>
+
+<footer>GENESIS · OPEN MINDS MEMORY</footer>
+
+<div class="modal" id="authModal">
+ <div class="modal-box">
+  <button class="close" onclick="closeModal('authModal')">×</button>
+  <div class="eyebrow blue">PERSONAL ACCOUNT</div>
+  <h2 id="authTitle">Вход в аккаунт</h2>
+  <div class="tabs">
+   <button id="loginTab" class="active" type="button" onclick="switchAuth('login')">Вход</button>
+   <button id="registerTab" type="button" onclick="switchAuth('register')">Регистрация</button>
+  </div>
+  <form id="authForm">
+   <div id="nameField" hidden>
+    <label for="authName">Имя</label>
+    <input id="authName" maxlength="60" placeholder="Твоё имя">
+   </div>
+   <label for="authEmail">Электронная почта</label>
+   <input id="authEmail" type="email" required placeholder="name@example.com">
+   <label for="authPassword">Пароль</label>
+   <input id="authPassword" type="password" minlength="8" required placeholder="Не менее 8 символов">
+   <button class="btn primary full" id="authSubmit" type="submit">Войти</button>
+  </form>
+  <p class="status" id="authMessage"></p>
+  <p style="font-size:11px;color:var(--muted)">При регистрации может потребоваться подтверждение электронной почты.</p>
+ </div>
 </div>
 
-<div id="app" class="hidden">
-  <header>
-    <div class="logo">GENESIS ✨</div>
-    <div class="row" style="flex:0;align-items:center">
-      <span id="userEmail" class="small"></span>
-      <button class="secondary" onclick="logout()">🚪 Выйти</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside>
-      <button class="nav-btn active" data-section="home">🏠 Главная</button>
-      <button class="nav-btn" data-section="memories">📸 Мои воспоминания</button>
-      <button class="nav-btn" data-section="shared">💌 Со мной поделились</button>
-      <button class="nav-btn" data-section="folders">📁 Общие папки</button>
-    </aside>
-
-    <main>
-      <section id="home" class="section active">
-        <h1>✨ Твоя история.</h1>
-        <p class="muted">Место, где моменты становятся воспоминаниями.</p>
-        <div class="grid">
-          <div class="card">
-            <h3>📚 Личный архив</h3>
-            <p>Сохраняй важные моменты своей жизни.</p>
-            <button onclick="navigate('memories')">📖 Открыть архив</button>
-          </div>
-          <div class="card">
-            <h3>💝 Общие воспоминания</h3>
-            <p>Смотри моменты, которыми поделились с тобой.</p>
-            <button onclick="navigate('shared')">💌 Открыть</button>
-          </div>
-          <div class="card">
-            <h3>🗂️ Общие папки</h3>
-            <p>Работай над папками вместе с другими людьми.</p>
-            <button onclick="navigate('folders')">📂 Открыть</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="memories" class="section">
-        <h1>📸 Мои воспоминания</h1>
-        <p class="muted">Сохраняй то, что хочется помнить.</p>
-        <div class="panel">
-          <h2>📝 Новое воспоминание</h2>
-          <label>🏷️ Название</label>
-          <input id="memoryName" placeholder="Например, незабываемый день">
-          <label>✍️ Описание</label>
-          <textarea id="memoryDescription" placeholder="Расскажи, что произошло..."></textarea>
-          <div class="row">
-            <div><label>😊 Настроение</label><input id="memoryMood" placeholder="Радость, спокойствие..."></div>
-            <div><label>🌤️ Погода</label><input id="memoryWeather" placeholder="Солнечно, дождь..."></div>
-          </div>
-          <label>🎵 Ссылка на песню (необязательно)</label>
-          <input id="memorySong" placeholder="https://...">
-          <label>🖼️ Файлы и фотографии</label>
-          <input id="memoryFiles" type="file" multiple>
-          <button class="gold" onclick="createMemory()">💾 Сохранить воспоминание</button>
-        </div>
-        <div id="myMemories" class="grid"></div>
-      </section>
-
-      <section id="shared" class="section">
-        <h1>💌 Со мной поделились</h1>
-        <p class="muted">Воспоминания, доступ к которым тебе предоставили.</p>
-        <div id="receivedMemories" class="grid"></div>
-      </section>
-
-      <section id="folders" class="section">
-        <h1>📁 Общие папки</h1>
-        <p class="muted">Совместное пространство для идей, заметок и файлов.</p>
-        <div class="panel">
-          <h2>🗂️ Создать общую папку</h2>
-          <input id="newFolderName" placeholder="Название папки">
-          <button class="gold" onclick="createFolder()">➕ Создать</button>
-        </div>
-        <div id="folderList" class="grid"></div>
-        <div id="folderWorkspace" class="panel hidden">
-          <div class="row">
-            <h2 id="currentFolderTitle"></h2>
-            <button class="secondary" onclick="closeFolder()">↩️ Назад</button>
-          </div>
-          <div class="row">
-            <button onclick="createSharedItem('folder')">📁 Папка</button>
-            <button onclick="createSharedItem('note')">📝 Заметка</button>
-            <button onclick="document.getElementById('sharedUpload').click()">📎 Файл</button>
-            <input id="sharedUpload" type="file" class="hidden" onchange="uploadSharedFile(this.files[0])">
-          </div>
-          <div class="actions">
-            <button class="secondary" onclick="makeInvite()">🔗 Создать ссылку-приглашение</button>
-            <button class="secondary" onclick="showMembers()">👥 Участники</button>
-          </div>
-          <div id="folderBreadcrumb" class="small" style="margin:15px 0"></div>
-          <div id="sharedItems"></div>
-          <div id="folderMembers" class="small"></div>
-        </div>
-      </section>
-    </main>
+<div class="modal" id="memoryModal">
+ <div class="modal-box wide">
+  <button class="close" onclick="closeModal('memoryModal')">×</button>
+  <div class="memory-layout">
+   <div class="memory-photo" id="memoryPhoto">GENESIS</div>
+   <div class="memory-content">
+    <div class="eyebrow blue">PERSONAL MEMORY</div>
+    <h2 id="memoryTitle"></h2>
+    <p id="memoryDate" style="color:var(--muted)"></p>
+    <p id="memoryText"></p>
+    <p id="memoryMood"></p>
+    <p id="memorySong"></p>
+    <div id="memoryFiles"></div>
+   </div>
   </div>
+ </div>
 </div>
 
-<div id="message"></div>
+<div class="toast" id="toast"></div>
 
 <script>
+/* SUPABASE */
 const SUPABASE_URL = "https://ydrzlazhucdlvvyjisnm.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_l_aik6ePDy4GFPZRwBH1ZQ_9oSb_Dji";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_KEY = "sb_publishable_l_aik6ePDy4GFPZRwBH1ZQ_9oSb_Dji";
+const BUCKET = "memory-files";
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
+const $ = s => document.querySelector(s);
+const colors = ["#4263eb","#8c70d6","#55a58a","#e2a44b","#df758b","#607d9e","#87954c","#526078"];
+
+let db = null;
 let currentUser = null;
-let currentFolder = null;
-let currentParent = null;
-let folderStack = [];
-let allMemories = [];
+let folders = [];
+let currentId = null;
+let currentFiles = [];
+let selectedColor = colors[0];
+let authMode = "login";
+let busy = false;
+let toastTimer = null;
 
-function toast(text) {
-  const el = document.getElementById("message");
-  el.textContent = text;
-  el.style.display = "block";
-  setTimeout(() => el.style.display = "none", 3500);
+function toast(message){
+ const el=$("#toast");
+ el.textContent=message;
+ el.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove("show"),3200);
 }
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-function toggleAuth(registerMode) {
-  document.getElementById("loginForm").classList.toggle("hidden", registerMode);
-  document.getElementById("registerForm").classList.toggle("hidden", !registerMode);
-}
-function navigate(section) {
-  document.querySelectorAll(".section").forEach(x => x.classList.remove("active"));
-  document.getElementById(section).classList.add("active");
-  document.querySelectorAll(".nav-btn").forEach(x =>
-    x.classList.toggle("active", x.dataset.section === section)
-  );
-  if (section === "memories") loadMemories();
-  if (section === "shared") loadReceivedMemories();
-  if (section === "folders") loadFolders();
-}
-document.querySelectorAll(".nav-btn").forEach(btn =>
-  btn.addEventListener("click", () => navigate(btn.dataset.section))
-);
 
-async function login() {
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  if (!email || !password) return toast("Заполни email и пароль");
-  const {error} = await db.auth.signInWithPassword({email,password});
-  if (error) toast(error.message);
+function status(el,message,type=""){
+ el.textContent=message;
+ el.className="status"+(type?" "+type:"");
 }
-async function register() {
-  const email = document.getElementById("registerEmail").value.trim();
-  const password = document.getElementById("registerPassword").value;
-  if (!email || password.length < 6) return toast("Проверь email и пароль (минимум 6 символов)");
-  const {data,error} = await db.auth.signUp({email,password});
-  if (error) return toast(error.message);
-  if (!data.session) toast("Проверь почту и подтверди регистрацию.");
-  else toast("Аккаунт создан!");
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
-async function logout() {
-  const {error} = await db.auth.signOut();
-  if (error) toast(error.message);
+
+function formatDate(value){
+ const d=new Date(value);
+ return Number.isNaN(d.getTime())?"":d.toLocaleDateString("ru-RU",{
+  day:"numeric",month:"long",year:"numeric"
+ });
 }
-function showApp(user) {
-  currentUser = user;
-  document.getElementById("authScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("userEmail").textContent = user.email || "";
-  loadMemories();
-  loadFolders();
-  acceptInviteFromUrl();
+
+function setBusy(value){
+ busy=value;
+ ["#authSubmit","#createFolderBtn","#saveBtn"].forEach(s=>{
+  const el=$(s);
+  if(el)el.disabled=value;
+ });
 }
-function showAuth() {
-  currentUser = null;
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("authScreen").classList.remove("hidden");
+
+function requireAuth(){
+ if(!currentUser){
+  toast("Сначала войди в аккаунт.");
+  openAuth("login");
+  return false;
+ }
+ return true;
 }
-db.auth.onAuthStateChange((event,session) => {
-  if (session?.user) showApp(session.user);
-  else showAuth();
+
+function initPalette(){
+ $("#palette").innerHTML=colors.map((c,i)=>`
+  <button type="button" class="color ${i===0?"active":""}"
+   style="background:${c}" data-color="${c}" aria-label="Цвет ${i+1}"></button>
+ `).join("");
+}
+
+$("#palette").addEventListener("click",e=>{
+ const b=e.target.closest("[data-color]");
+ if(!b)return;
+ selectedColor=b.dataset.color;
+ document.querySelectorAll(".color").forEach(x=>{
+  x.classList.toggle("active",x===b);
+ });
 });
 
-async function createMemory() {
-  const name = document.getElementById("memoryName").value.trim();
-  if (!name) return toast("Введи название воспоминания");
-  const filesInput = document.getElementById("memoryFiles");
-  const uploaded = [];
-  for (const file of filesInput.files) {
-    const path = currentUser.id + "/" + crypto.randomUUID() + "_" + file.name;
-    const {error} = await db.storage.from("memory-files").upload(path,file);
-    if (error) return toast("Ошибка загрузки файла: " + error.message);
-    uploaded.push({name:file.name,path,mime_type:file.type});
+function updateInterface(){
+ const signedIn=!!currentUser;
+ $("#signedOutNotice").hidden=signedIn;
+ $("#privateStudio").hidden=!signedIn;
+ $("#archiveSignedOut").hidden=signedIn;
+ $("#archiveGrid").hidden=!signedIn;
+
+ if(signedIn){
+  $("#userBox").innerHTML=`
+   <span class="user-email">${escapeHTML(currentUser.email)}</span>
+   <button class="btn small" onclick="logout()">Выйти</button>`;
+ }else{
+  $("#userBox").innerHTML=`<button class="btn small" onclick="openAuth('login')">Войти</button>`;
+  folders=[];
+  currentId=null;
+  currentFiles=[];
+  renderFolders();
+  renderArchive();
+  openFolder(null);
+ }
+}
+
+function goToWorkspace(){
+ $("#studio").scrollIntoView({behavior:"smooth"});
+ if(!currentUser)openAuth("login");
+}
+
+function renderFolders(){
+ const target=$("#folderList");
+ target.innerHTML=folders.length?folders.map(f=>`
+  <div class="folder-item ${f.id===currentId?"active":""}"
+   data-id="${escapeHTML(f.id)}" tabindex="0" role="button">
+   <div class="folder-icon" style="--folder-color:${escapeHTML(f.color||colors[0])}"></div>
+   <strong>${escapeHTML(f.name)}</strong>
+   <small>${formatDate(f.created_at)}</small>
+  </div>
+ `).join(""):'<p style="font-size:12px;color:var(--muted)">Папок пока нет.</p>';
+}
+
+function renderArchive(){
+ const target=$("#archiveGrid");
+ if(!folders.length){
+  target.innerHTML='<p class="empty">Твой дневник пока пуст. Создай первую папку!</p>';
+  return;
+ }
+
+ target.innerHTML=folders.map(f=>{
+  const files=Array.isArray(f.files)?f.files:[];
+  const photo=files.find(x=>(x.type||"").startsWith("image/"));
+  return `
+   <article class="day-card" data-memory="${escapeHTML(f.id)}" tabindex="0" role="button">
+    <div class="day-cover" data-cover="${escapeHTML(f.id)}"
+     style="--cover-color:${escapeHTML(f.color||colors[0])}">${photo?"":"✦"}</div>
+    <div class="day-info">
+     <h3>${escapeHTML(f.name)}</h3>
+     <small>${formatDate(f.created_at)}</small>
+     <p>${escapeHTML((f.description||"Пока нет описания.").slice(0,110))}</p>
+    </div>
+   </article>`;
+ }).join("");
+
+ loadArchiveCovers();
+}
+
+async function getFileUrl(path){
+ const {data,error}=await db.storage.from(BUCKET).createSignedUrl(path,3600);
+ if(error){
+  console.error(error);
+  return "";
+ }
+ return data?.signedUrl||"";
+}
+
+async function loadArchiveCovers(){
+ for(const f of folders){
+  const photo=(Array.isArray(f.files)?f.files:[]).find(x=>(x.type||"").startsWith("image/"));
+  if(!photo)continue;
+  const url=await getFileUrl(photo.path);
+  const cover=document.querySelector(`[data-cover="${CSS.escape(f.id)}"]`);
+  if(cover&&url){
+   cover.style.backgroundImage=`url("${url}")`;
+   cover.textContent="";
   }
-  const record = {
-    user_id:currentUser.id,
-    name,
-    description:document.getElementById("memoryDescription").value,
-    mood:document.getElementById("memoryMood").value,
-    weather:document.getElementById("memoryWeather").value,
-    song_url:document.getElementById("memorySong").value,
-    files:uploaded
-  };
-  const {error} = await db.from("memories").insert(record);
-  if (error) return toast(error.message);
-  ["memoryName","memoryDescription","memoryMood","memoryWeather","memorySong"].forEach(id =>
-    document.getElementById(id).value = ""
+ }
+}
+
+async function refreshFolders(){
+ if(!currentUser)return;
+
+ const {data,error}=await db.from("memories")
+  .select("*")
+  .eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error){
+  console.error(error);
+  toast("Ошибка загрузки папок: "+error.message);
+  return;
+ }
+
+ folders=data||[];
+ renderFolders();
+ renderArchive();
+
+ if(currentId&&!folders.some(f=>f.id===currentId)){
+  openFolder(null);
+ }
+}
+
+function openFolder(id){
+ if(!currentUser)return;
+ currentId=id;
+ const f=folders.find(x=>x.id===id);
+
+ $("#empty").hidden=!!f;
+ $("#editor").hidden=!f;
+
+ if(!f){
+  currentFiles=[];
+  renderFolders();
+  renderFiles();
+  return;
+ }
+
+ $("#editorTitle").textContent=f.name;
+ $("#editorDate").textContent=formatDate(f.created_at);
+ $("#editorIcon").style.setProperty("--folder-color",f.color||colors[0]);
+
+ $("#dayText").value=f.description||"";
+ $("#songUrl").value=f.song_url||"";
+ $("#songInfo").value=f.song_info||"";
+ $("#mood").value=f.mood||"";
+ $("#weather").value=f.weather||"";
+
+ currentFiles=(Array.isArray(f.files)?f.files:[]).map(x=>({...x,existing:true}));
+ renderFiles();
+ renderFolders();
+ status($("#saveStatus"),"");
+}
+
+function renderFiles(){
+ $("#fileList").innerHTML=currentFiles.map((f,i)=>`
+  <div class="file-item">
+   ${escapeHTML(f.name)}
+   <button type="button" data-remove="${i}" aria-label="Удалить">×</button>
+  </div>
+ `).join("");
+}
+
+async function createFolder(event){
+ event.preventDefault();
+ if(!requireAuth()||busy)return;
+
+ const name=$("#folderName").value.trim();
+ if(!name){
+  toast("Введи название папки.");
+  return;
+ }
+
+ setBusy(true);
+ $("#createFolderBtn").textContent="Создание…";
+
+ const {data,error}=await db.from("memories").insert({
+  user_id:currentUser.id,
+  name,
+  color:selectedColor,
+  description:"",
+  files:[]
+ }).select().single();
+
+ setBusy(false);
+ $("#createFolderBtn").textContent="＋ Создать папку";
+
+ if(error){
+  console.error(error);
+  toast("Не удалось создать папку: "+error.message);
+  return;
+ }
+
+ folders.unshift(data);
+ $("#folderName").value="";
+ selectedColor=colors[0];
+ document.querySelectorAll(".color").forEach((el,i)=>{
+  el.classList.toggle("active",i===0);
+ });
+
+ renderFolders();
+ renderArchive();
+ openFolder(data.id);
+ toast("Папка успешно создана!");
+}
+
+$("#folderForm").addEventListener("submit",createFolder);
+
+$("#folderList").addEventListener("click",e=>{
+ const item=e.target.closest("[data-id]");
+ if(item)openFolder(item.dataset.id);
+});
+
+$("#folderList").addEventListener("keydown",e=>{
+ if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-id]")){
+  e.preventDefault();
+  openFolder(e.target.dataset.id);
+ }
+});
+
+$("#chooseFiles").addEventListener("click",()=>{
+ if(requireAuth())$("#fileInput").click();
+});
+
+$("#fileInput").addEventListener("change",e=>{
+ addFiles(e.target.files);
+});
+
+function addFiles(fileList){
+ if(!requireAuth())return;
+
+ for(const file of Array.from(fileList||[])){
+  if(file.size>MAX_FILE_SIZE){
+   toast(file.name+": файл больше 25 МБ.");
+   continue;
+  }
+  if(!/^(image|video|audio)\//.test(file.type)){
+   toast(file.name+": неподдерживаемый формат.");
+   continue;
+  }
+  currentFiles.push({
+   name:file.name,
+   type:file.type,
+   file,
+   existing:false
+  });
+ }
+ renderFiles();
+ $("#fileInput").value="";
+}
+
+$("#fileList").addEventListener("click",e=>{
+ const b=e.target.closest("[data-remove]");
+ if(!b)return;
+ currentFiles.splice(Number(b.dataset.remove),1);
+ renderFiles();
+});
+
+const drop=$("#drop");
+drop.addEventListener("dragover",e=>{
+ e.preventDefault();
+ drop.style.background="#edf1ff";
+});
+drop.addEventListener("dragleave",()=>{
+ drop.style.background="";
+});
+drop.addEventListener("drop",e=>{
+ e.preventDefault();
+ drop.style.background="";
+ addFiles(e.dataTransfer.files);
+});
+
+function safeFileName(name){
+ return String(name).normalize("NFKD")
+  .replace(/[^a-zA-Z0-9._-]/g,"_").slice(-90)||"file";
+}
+
+async function uploadNewFiles(){
+ const uploaded=[];
+
+ for(const item of currentFiles){
+  if(item.existing){
+   uploaded.push({
+    name:item.name,
+    type:item.type,
+    path:item.path
+   });
+   continue;
+  }
+
+  const path=`${currentUser.id}/${currentId}/${crypto.randomUUID()}-${safeFileName(item.name)}`;
+
+  const {error}=await db.storage.from(BUCKET).upload(
+   path,item.file,{contentType:item.type,upsert:false}
   );
-  filesInput.value = "";
-  toast("Воспоминание сохранено!");
-  loadMemories();
-}
-async function loadMemories() {
-  if (!currentUser) return;
-  const {data,error} = await db.from("memories").select("*").order("created_at",{ascending:false});
-  if (error) return toast(error.message);
-  allMemories = data || [];
-  renderMemories(allMemories.filter(m => m.user_id === currentUser.id),"myMemories",true);
-}
-async function loadReceivedMemories() {
-  if (!currentUser) return;
-  const {data,error} = await db.from("memories").select("*").neq("user_id",currentUser.id).order("created_at",{ascending:false});
-  if (error) return toast(error.message);
-  renderMemories(data || [],"receivedMemories",false);
-}
-function renderMemories(items,target,owned) {
-  const el = document.getElementById(target);
-  if (!items.length) {
-    el.innerHTML = '<div class="empty">Пока здесь ничего нет.</div>';
-    return;
+
+  if(error){
+   const newPaths=uploaded.filter(x=>x.newUpload).map(x=>x.path);
+   if(newPaths.length)await db.storage.from(BUCKET).remove(newPaths);
+   throw error;
   }
-  el.innerHTML = items.map(m => `
-    <div class="card">
-      <h3>✨ ${escapeHTML(m.name)}</h3>
-      <p>${escapeHTML(m.description)}</p>
-      <div class="small">😊 ${escapeHTML(m.mood || "")} ${m.weather ? " · 🌤️ " + escapeHTML(m.weather) : ""}</div>
-      <div class="small">📅 ${m.created_at ? new Date(m.created_at).toLocaleDateString() : ""}</div>
-      ${m.song_url ? `<p><a href="${escapeHTML(m.song_url)}" target="_blank" rel="noopener" style="color:var(--blue)">🎵 Открыть песню</a></p>` : ""}
-      <div class="actions">
-        <button class="secondary" onclick="showMemoryFiles('${m.id}')">📎 Файлы</button>
-        ${owned ? `<button onclick="shareMemory('${m.id}')">💌 Поделиться</button>
-        <button class="secondary" onclick="deleteMemory('${m.id}')">🗑️ Удалить</button>` : ""}
-      </div>
-      <div id="memoryFiles-${m.id}"></div>
-    </div>
-  `).join("");
-}
-async function showMemoryFiles(id) {
-  const memory = allMemories.find(m => m.id === id);
-  const box = document.getElementById("memoryFiles-" + id);
-  if (!memory || !box) return;
-  const files = Array.isArray(memory.files) ? memory.files : [];
-  if (!files.length) {box.innerHTML = '<p class="small">📭 Файлов нет.</p>';return;}
-  let html = "";
-  for (const file of files) {
-    const {data,error} = await db.storage.from("memory-files").createSignedUrl(file.path,3600);
-    html += error
-      ? `<p class="small">${escapeHTML(file.name)} — ${escapeHTML(error.message)}</p>`
-      : `<div class="file-row"><span>📎 ${escapeHTML(file.name)}</span><a style="color:var(--blue)" target="_blank" rel="noopener" href="${escapeHTML(data.signedUrl)}">Открыть ↗</a></div>`;
-  }
-  box.innerHTML = html;
-}
-async function deleteMemory(id) {
-  if (!confirm("Удалить это воспоминание?")) return;
-  const memory = allMemories.find(m => m.id === id);
-  const paths = (Array.isArray(memory?.files) ? memory.files : []).map(f => f.path);
-  if (paths.length) {
-    const {error:storageError} = await db.storage.from("memory-files").remove(paths);
-    if (storageError) return toast(storageError.message);
-  }
-  const {error} = await db.from("memories").delete().eq("id",id);
-  if (error) return toast(error.message);
-  toast("🗑️ Воспоминание удалено");
-  loadMemories();
-}
-async function shareMemory(id) {
-  const email = prompt("Email пользователя, с которым поделиться:");
-  if (!email) return;
-  const {error} = await db.rpc("share_memory_with_email",{
-    p_memory_id:id,
-    p_email:email.trim()
+
+  uploaded.push({
+   name:item.name,
+   type:item.type,
+   path,
+   newUpload:true
   });
-  if (error) return toast(error.message);
-  toast("💌 Доступ предоставлен!");
+ }
+
+ return uploaded.map(({newUpload,...file})=>file);
 }
 
-// Общие папки
-async function createFolder() {
-  const name = document.getElementById("newFolderName").value.trim();
-  if (!name) return toast("Введи название папки");
-  const {error} = await db.rpc("create_shared_folder",{p_name:name});
-  if (error) return toast(error.message);
-  document.getElementById("newFolderName").value = "";
-  toast("📁 Общая папка создана");
-  loadFolders();
-}
-async function loadFolders() {
-  if (!currentUser) return;
-  const {data,error} = await db.from("shared_folders").select("*").order("created_at",{ascending:false});
-  if (error) return toast(error.message);
-  const el = document.getElementById("folderList");
-  if (!data?.length) {
-    el.innerHTML = '<div class="empty">📭 Общих папок пока нет.</div>';
-    return;
+async function saveCurrent(){
+ if(!requireAuth()||busy)return;
+
+ const f=folders.find(x=>x.id===currentId);
+ if(!f)return;
+
+ const songUrl=$("#songUrl").value.trim();
+ if(songUrl){
+  try{
+   const u=new URL(songUrl);
+   if(!["http:","https:"].includes(u.protocol))throw new Error();
+  }catch{
+   toast("Проверь ссылку на песню.");
+   return;
   }
-  el.innerHTML = data.map(f => `
-    <div class="card">
-      <h3>📁 ${escapeHTML(f.name)}</h3>
-      <p class="small">👥 Общее пространство</p>
-      <button onclick="openFolder('${f.id}','${escapeHTML(f.name)}')">📂 Открыть</button>
-    </div>
-  `).join("");
+ }
+
+ setBusy(true);
+ $("#saveBtn").textContent="Сохранение…";
+ status($("#saveStatus"),"Сохраняем файлы и воспоминание…");
+
+ let files;
+ try{
+  files=await uploadNewFiles();
+ }catch(error){
+  console.error(error);
+  setBusy(false);
+  $("#saveBtn").textContent="Сохранить воспоминание";
+  status($("#saveStatus"),"Ошибка загрузки: "+error.message,"error");
+  toast("Не удалось загрузить файлы.");
+  return;
+ }
+
+ const updates={
+  description:$("#dayText").value.trim(),
+  song_url:songUrl||null,
+  song_info:$("#songInfo").value.trim()||null,
+  mood:$("#mood").value||null,
+  weather:$("#weather").value||null,
+  files
+ };
+
+ const {data,error}=await db.from("memories")
+  .update(updates)
+  .eq("id",currentId)
+  .eq("user_id",currentUser.id)
+  .select()
+  .single();
+
+ setBusy(false);
+ $("#saveBtn").textContent="Сохранить воспоминание";
+
+ if(error){
+  console.error(error);
+  status($("#saveStatus"),"Ошибка сохранения: "+error.message,"error");
+  toast("Не удалось сохранить воспоминание.");
+  return;
+ }
+
+ const index=folders.findIndex(x=>x.id===currentId);
+ if(index!==-1)folders[index]=data;
+
+ currentFiles=(data.files||[]).map(x=>({...x,existing:true}));
+
+ renderFolders();
+ renderArchive();
+
+ // Очищаем заполненные поля после успешного сохранения.
+ $("#dayText").value="";
+ $("#songUrl").value="";
+ $("#songInfo").value="";
+ $("#mood").value="";
+ $("#weather").value="";
+
+ // Сохранённые файлы остаются прикреплёнными к воспоминанию.
+ renderFiles();
+
+ status($("#saveStatus"),"Воспоминание успешно сохранено в облаке.","success");
+ toast("Сохранено! Поля очищены.");
 }
-async function openFolder(id,name) {
-  currentFolder = id;
-  currentParent = null;
-  folderStack = [];
-  document.getElementById("folderWorkspace").classList.remove("hidden");
-  document.getElementById("currentFolderTitle").textContent = "📁 " + name;
-  await loadSharedItems();
-  document.getElementById("folderWorkspace").scrollIntoView({behavior:"smooth"});
-}
-function closeFolder() {
-  currentFolder = null;
-  document.getElementById("folderWorkspace").classList.add("hidden");
-}
-async function loadSharedItems() {
-  if (!currentFolder) return;
-  const {data,error} = await db.from("shared_folder_items")
-    .select("*").eq("folder_id",currentFolder)
-    .order("created_at",{ascending:true});
-  if (error) return toast(error.message);
-  const items = (data || []).filter(x => (x.parent_id || null) === currentParent);
-  document.getElementById("folderBreadcrumb").textContent =
-    "📁 Папка" + (folderStack.length ? " / " + folderStack.map(x => x.name).join(" / ") : "");
-  const el = document.getElementById("sharedItems");
-  if (!items.length) {
-    el.innerHTML = '<div class="empty">📭 Здесь пока пусто. Создай папку, заметку или добавь файл.</div>';
-    return;
+
+async function deleteCurrent(){
+ if(!requireAuth()||!currentId||busy)return;
+ if(!confirm("Удалить эту папку и все её файлы?"))return;
+
+ const f=folders.find(x=>x.id===currentId);
+ if(!f)return;
+
+ setBusy(true);
+ const paths=(Array.isArray(f.files)?f.files:[]).map(x=>x.path).filter(Boolean);
+
+ if(paths.length){
+  const {error:storageError}=await db.storage.from(BUCKET).remove(paths);
+  if(storageError){
+   setBusy(false);
+   toast("Ошибка удаления файлов: "+storageError.message);
+   return;
   }
-  el.innerHTML = items.map(item => `
-    <div class="file-row">
-      <span>${item.item_type === "folder" ? "📁" : item.item_type === "note" ? "📝" : "📎"}
-      ${escapeHTML(item.name)}</span>
-      <div class="actions">
-        ${item.item_type === "folder" ? `<button onclick="enterFolder('${item.id}','${escapeHTML(item.name)}')">📂 Открыть</button>` : ""}
-        ${item.item_type === "note" ? `<button class="secondary" onclick="readNote('${item.id}')">📖 Читать</button>` : ""}
-        ${item.item_type === "file" ? `<button class="secondary" onclick="openSharedFile('${item.id}')">📂 Открыть</button>` : ""}
-        <button class="secondary" onclick="deleteSharedItem('${item.id}','${item.item_type}')">🗑️ Удалить</button>
-      </div>
-    </div>
-  `).join("");
+ }
+
+ const {error}=await db.from("memories")
+  .delete().eq("id",currentId).eq("user_id",currentUser.id);
+
+ setBusy(false);
+
+ if(error){
+  toast("Не удалось удалить папку: "+error.message);
+  return;
+ }
+
+ folders=folders.filter(x=>x.id!==currentId);
+ currentId=null;
+ openFolder(null);
+ renderFolders();
+ renderArchive();
+ toast("Папка удалена.");
 }
-function enterFolder(id,name) {
-  folderStack.push({id:currentParent,name});
-  currentParent = id;
-  loadSharedItems();
-}
-async function createSharedItem(type) {
-  const name = prompt(type === "folder" ? "Название папки:" : "Название заметки:");
-  if (!name) return;
-  let content = null;
-  if (type === "note") {
-    content = prompt("Текст заметки:") || "";
+
+async function openMemory(id){
+ if(!requireAuth())return;
+
+ const f=folders.find(x=>x.id===id);
+ if(!f)return;
+
+ $("#memoryTitle").textContent=f.name;
+ $("#memoryDate").textContent=formatDate(f.created_at);
+ $("#memoryText").textContent=f.description||"Описание отсутствует.";
+ $("#memoryMood").textContent=f.mood?"Настроение: "+f.mood:"";
+ $("#memorySong").textContent=f.song_info?"Музыка: "+f.song_info:"";
+ $("#memoryPhoto").style.backgroundImage="";
+ $("#memoryPhoto").textContent="GENESIS";
+ $("#memoryFiles").innerHTML="";
+
+ const files=Array.isArray(f.files)?f.files:[];
+ const photo=files.find(x=>(x.type||"").startsWith("image/"));
+
+ if(photo){
+  const url=await getFileUrl(photo.path);
+  if(url){
+   $("#memoryPhoto").style.backgroundImage=`url("${url}")`;
+   $("#memoryPhoto").textContent="";
   }
-  const {error} = await db.from("shared_folder_items").insert({
-    folder_id:currentFolder,
-    parent_id:currentParent,
-    item_type:type,
-    name,
-    content,
-    created_by:currentUser.id
+ }
+
+ for(const file of files){
+  const url=await getFileUrl(file.path);
+  if(!url)continue;
+
+  const link=document.createElement("a");
+  link.href=url;
+  link.target="_blank";
+  link.rel="noopener noreferrer";
+  link.className="btn small";
+  link.style.display="inline-block";
+  link.style.margin="4px";
+  link.textContent="Открыть: "+file.name;
+  $("#memoryFiles").appendChild(link);
+ }
+
+ if(f.song_url){
+  const link=document.createElement("a");
+  link.href=f.song_url;
+  link.target="_blank";
+  link.rel="noopener noreferrer";
+  link.className="btn small";
+  link.style.display="inline-block";
+  link.style.margin="4px";
+  link.textContent="Открыть музыку";
+  $("#memoryFiles").appendChild(link);
+ }
+
+ $("#memoryModal").classList.add("open");
+}
+
+$("#archiveGrid").addEventListener("click",e=>{
+ const card=e.target.closest("[data-memory]");
+ if(card)openMemory(card.dataset.memory);
+});
+
+$("#archiveGrid").addEventListener("keydown",e=>{
+ if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-memory]")){
+  e.preventDefault();
+  openMemory(e.target.dataset.memory);
+ }
+});
+
+function openAuth(mode="login"){
+ switchAuth(mode);
+ $("#authModal").classList.add("open");
+}
+
+function closeModal(id){
+ $("#"+id).classList.remove("open");
+}
+
+function switchAuth(mode){
+ authMode=mode;
+ $("#loginTab").classList.toggle("active",mode==="login");
+ $("#registerTab").classList.toggle("active",mode==="register");
+ $("#authTitle").textContent=mode==="login"?"Вход в аккаунт":"Создание аккаунта";
+ $("#nameField").hidden=mode!=="register";
+ $("#authName").required=mode==="register";
+ $("#authPassword").autocomplete=mode==="login"?"current-password":"new-password";
+ $("#authSubmit").textContent=mode==="login"?"Войти":"Зарегистрироваться";
+ status($("#authMessage"),"");
+}
+
+$("#authForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!db||busy)return;
+
+ const email=$("#authEmail").value.trim().toLowerCase();
+ const password=$("#authPassword").value;
+
+ setBusy(true);
+ status($("#authMessage"),authMode==="login"?"Выполняется вход…":"Создаём аккаунт…");
+
+ let result;
+
+ if(authMode==="register"){
+  const name=$("#authName").value.trim();
+  if(!name){
+   setBusy(false);
+   status($("#authMessage"),"Введи имя.","error");
+   return;
+  }
+
+  result=await db.auth.signUp({
+   email,password,
+   options:{data:{display_name:name}}
   });
-  if (error) return toast(error.message);
-  toast("✅ Добавлено");
-  loadSharedItems();
+ }else{
+  result=await db.auth.signInWithPassword({email,password});
+ }
+
+ setBusy(false);
+
+ if(result.error){
+  status($("#authMessage"),result.error.message,"error");
+  return;
+ }
+
+ if(authMode==="register"&&!result.data.session){
+  status($("#authMessage"),"Аккаунт создан. Подтверди почту, затем войди.","success");
+  return;
+ }
+
+ $("#authModal").classList.remove("open");
+ toast(authMode==="login"?"Ты вошёл в аккаунт.":"Аккаунт создан.");
+});
+
+async function logout(){
+ if(!db)return;
+
+ const {error}=await db.auth.signOut();
+ if(error){
+  toast("Не удалось выйти: "+error.message);
+  return;
+ }
+
+ currentUser=null;
+ folders=[];
+ currentId=null;
+ currentFiles=[];
+ updateInterface();
+ toast("Ты вышел из аккаунта.");
 }
-async function readNote(id) {
-  const {data,error} = await db.from("shared_folder_items").select("name,content").eq("id",id).single();
-  if (error) return toast(error.message);
-  alert("📝 " + data.name + "\n\n" + (data.content || ""));
-}
-async function uploadSharedFile(file) {
-  if (!file || !currentFolder) return;
-  const path = currentFolder + "/" + crypto.randomUUID() + "_" + file.name;
-  const {error:uploadError} = await db.storage.from("shared-folder-files").upload(path,file);
-  if (uploadError) return toast(uploadError.message);
-  const {error} = await db.from("shared_folder_items").insert({
-    folder_id:currentFolder,
-    parent_id:currentParent,
-    item_type:"file",
-    name:file.name,
-    storage_path:path,
-    mime_type:file.type,
-    size_bytes:file.size,
-    created_by:currentUser.id
-  });
-  if (error) {
-    await db.storage.from("shared-folder-files").remove([path]);
-    return toast(error.message);
+
+document.querySelectorAll(".modal").forEach(m=>{
+ m.addEventListener("click",e=>{
+  if(e.target===m)m.classList.remove("open");
+ });
+});
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){
+  document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"));
+ }
+});
+
+async function init(){
+ initPalette();
+
+ if(!window.supabase?.createClient){
+  toast("Не удалось загрузить Supabase. Проверь интернет.");
+  return;
+ }
+
+ db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+ const {data,error}=await db.auth.getSession();
+ if(error)console.error(error);
+
+ currentUser=data.session?.user||null;
+ updateInterface();
+
+ if(currentUser)await refreshFolders();
+
+ db.auth.onAuthStateChange((_event,session)=>{
+  currentUser=session?.user||null;
+  currentId=null;
+  currentFiles=[];
+  updateInterface();
+
+  if(currentUser){
+   setTimeout(()=>refreshFolders(),0);
   }
-  document.getElementById("sharedUpload").value = "";
-  toast("📎 Файл загружен");
-  loadSharedItems();
+ });
 }
-async function openSharedFile(id) {
-  const {data,error} = await db.from("shared_folder_items").select("*").eq("id",id).single();
-  if (error) return toast(error.message);
-  const result = await db.storage.from("shared-folder-files").createSignedUrl(data.storage_path,3600);
-  if (result.error) return toast(result.error.message);
-  window.open(result.data.signedUrl,"_blank","noopener");
-}
-async function deleteSharedItem(id,type) {
-  const item = (await db.from("shared_folder_items")
-    .select("*").eq("id",id).single()).data;
 
-  if (!item || !confirm(`Удалить «${item.name}»?`)) return;
-
-  const {data:allItems,error:loadError} = await db.from("shared_folder_items")
-    .select("id,parent_id,item_type,storage_path")
-    .eq("folder_id",currentFolder);
-
-  if (loadError) return toast(loadError.message);
-
-  const idsToDelete = new Set([id]);
-
-  if (type === "folder") {
-    let changed = true;
-    while (changed) {
-      changed = false;
-      for (const child of (allItems || [])) {
-        if (child.parent_id && idsToDelete.has(child.parent_id) && !idsToDelete.has(child.id)) {
-          idsToDelete.add(child.id);
-          changed = true;
-        }
-      }
-    }
-  }
-
-  const descendants = (allItems || []).filter(entry => idsToDelete.has(entry.id));
-  const paths = descendants.map(entry => entry.storage_path).filter(Boolean);
-
-  if (paths.length) {
-    const {error:storageError} = await db.storage
-      .from("shared-folder-files")
-      .remove(paths);
-    if (storageError) return toast(storageError.message);
-  }
-
-  const {error} = await db.from("shared_folder_items")
-    .delete()
-    .in("id",Array.from(idsToDelete));
-
-  if (error) return toast(error.message);
-
-  toast("🗑️ Материал удалён");
-  await loadSharedItems();
-}
-async function makeInvite() {
-  const {data,error} = await db.rpc("create_shared_folder_invite",{
-    p_folder_id:currentFolder
-  });
-  if (error) return toast(error.message);
-  const link = location.origin + location.pathname + "?invite=" + encodeURIComponent(data);
-  try {
-    await navigator.clipboard.writeText(link);
-    toast("🔗 Ссылка-приглашение скопирована! Она действует 7 дней.");
-  } catch {
-    prompt("Скопируй ссылку-приглашение:",link);
-  }
-}
-async function acceptInviteFromUrl() {
-  const params = new URLSearchParams(location.search);
-  const token = params.get("invite");
-  if (!token || !currentUser) return;
-  const {error} = await db.rpc("accept_shared_folder_invite",{p_token:token});
-  if (error) toast("Не удалось принять приглашение: " + error.message);
-  else toast("🎉 Ты присоединился к общей папке!");
-  history.replaceState({},document.title,location.pathname);
-  loadFolders();
-}
-async function showMembers() {
-  const {data,error} = await db.from("shared_folder_members")
-    .select("user_id,role,joined_at").eq("folder_id",currentFolder);
-  if (error) return toast(error.message);
-  document.getElementById("folderMembers").innerHTML =
-    "<hr><b>👥 Участники:</b><br>" + (data || []).map(m =>
-      `<p>${escapeHTML(m.role)} · ${escapeHTML(m.user_id)}</p>`
-    ).join("");
-}
+init();
 </script>
 </body>
 </html>
