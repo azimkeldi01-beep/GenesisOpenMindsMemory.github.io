@@ -536,63 +536,95 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, 
   );
 let youtubeSearchResults = [];
 
-$("#songSearchButton").addEventListener("click", async () => {
-  const query = $("#songSearchInput").value.trim();
+function setupSongSearch() {
+  const button = $("#songSearchButton");
+  const results = $("#songSearchResults");
+  const input = $("#songSearchInput");
 
-  if (!query) {
-    $("#songSearchResults").innerHTML =
-      '<p class="notice">Введите название песни.</p>';
+  if (!button || !results || !input) {
+    console.error("Элементы поиска музыки не найдены!");
     return;
   }
 
-  const button = $("#songSearchButton");
-  const results = $("#songSearchResults");
+  button.addEventListener("click", async () => {
+    const query = input.value.trim();
 
-  button.disabled = true;
-  button.textContent = "Ищем...";
-  results.innerHTML = '<p class="notice">Ищем песни...</p>';
-
-  try {
-    const songs = await searchYouTubeSongs(query);
-
-    youtubeSearchResults = songs;
-
-    if (songs.length === 0) {
+    if (!query) {
       results.innerHTML =
-        '<p class="notice">Песни не найдены.</p>';
+        '<p class="notice">Введите название песни.</p>';
       return;
     }
 
-    results.innerHTML = songs.map((song, index) => `
-      <div class="song-result">
-        <img
-          src="${escapeHTML(song.thumbnail || "")}"
-          alt=""
-        >
-
-        <div class="song-result-info">
-          <strong>${escapeHTML(song.title)}</strong>
-          <small>${escapeHTML(song.artist)}</small>
-        </div>
-
-        <button
-          type="button"
-          class="btn secondary"
-          data-select-song="${index}"
-        >
-          Выбрать
-        </button>
-      </div>
-    `).join("");
-
-  } catch (error) {
+    button.disabled = true;
+    button.textContent = "Ищем...";
     results.innerHTML =
-      `<p class="notice">${escapeHTML(error.message)}</p>`;
-  } finally {
-    button.disabled = false;
-    button.textContent = "Найти";
-  }
-});
+      '<p class="notice">Ищем песни...</p>';
+
+    try {
+      const songs = await searchYouTubeSongs(query);
+      youtubeSearchResults = songs;
+
+      if (!songs.length) {
+        results.innerHTML =
+          '<p class="notice">Песни не найдены.</p>';
+        return;
+      }
+
+      results.innerHTML = songs.map((song, index) => `
+        <div class="song-result">
+          <img src="${escapeHTML(song.thumbnail || "")}" alt="">
+          <div class="song-result-info">
+            <strong>${escapeHTML(song.title)}</strong>
+            <small>${escapeHTML(song.artist)}</small>
+          </div>
+          <button
+            type="button"
+            class="btn secondary"
+            data-select-song="${index}"
+          >Выбрать</button>
+        </div>
+      `).join("");
+
+    } catch (error) {
+      console.error(error);
+      results.innerHTML =
+        `<p class="notice">${escapeHTML(error.message)}</p>`;
+    } finally {
+      button.disabled = false;
+      button.textContent = "Найти";
+    }
+  });
+
+  results.addEventListener("click", event => {
+    const selectButton =
+      event.target.closest("[data-select-song]");
+
+    if (!selectButton) return;
+
+    const song =
+      youtubeSearchResults[
+        Number(selectButton.dataset.selectSong)
+      ];
+
+    if (!song) return;
+
+    $("#songUrl").value = song.url;
+    $("#songInfo").value =
+      `${song.title} — ${song.artist}`;
+
+    $("#selectedSong").textContent =
+      `✓ Выбрано: ${song.title} — ${song.artist}`;
+
+    results.innerHTML = "";
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupSongSearch);
+} else {
+  setupSongSearch();
+}
+
 
 $("#songSearchResults").addEventListener("click", event => {
   const button = event.target.closest("[data-select-song]");
