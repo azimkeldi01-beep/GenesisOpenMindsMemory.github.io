@@ -625,7 +625,6 @@ function setupSongSearch() {
     results.innerHTML = "";
   });
 }
-setupSongSearch();
 function status(element,message,isError=false) {
   element.textContent = message;
   element.style.color = isError ? "#d84c4c" : "#4263eb";
@@ -1609,6 +1608,7 @@ async function handlePendingSharedInvite() {
     showAuth();
   }
 })();
+  setupSongSearch();
 </script>
 </body>
 </html>
