@@ -1071,25 +1071,23 @@ async function showMemory(memory) {
 function getYouTubeVideoId(url) {
   try {
     const parsed = new URL(url);
-
+    let id = "";
     if (parsed.hostname === "youtu.be") {
-      return parsed.pathname.slice(1);
-    }
-
-    if (
-      parsed.hostname === "youtube.com" ||
-      parsed.hostname.endsWith(".youtube.com")
+      id = parsed.pathname.split("/").filter(Boolean)[0];
+    } else if (
+      parsed.hostname.includes("youtube.com") ||
+      parsed.hostname.includes("youtube-nocookie.com")
     ) {
-      return parsed.searchParams.get("v") ||
+      id =
+        parsed.searchParams.get("v") ||
         parsed.pathname.split("/").filter(Boolean).pop();
     }
-  } catch (error) {}
-
-  return "";
+    return /^[a-zA-Z0-9_-]{11}$/.test(id || "") ? id : "";
+  } catch {
+    return "";
+  }
 }
-
 const videoId = getYouTubeVideoId(memory.song_url || "");
-
 $("#viewSong").innerHTML = videoId
   ? `
     <div class="notice">
