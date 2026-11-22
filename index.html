@@ -497,7 +497,13 @@ $("#authForm").addEventListener("submit", async event => {
   try {
     let result;
     if (authMode === "register") {
-      result = await supabaseClient.auth.signUp({email,password});
+      result = await supabaseClient.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: "https://azimkeldi01-beep.github.io/GenesisOpenMindsMemory.github.io/"
+  }
+});
     } else {
       result = await supabaseClient.auth.signInWithPassword({email,password});
     }
