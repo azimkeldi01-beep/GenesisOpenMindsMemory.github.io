@@ -542,14 +542,17 @@ $("#logoutButton").addEventListener("click", async () => {
   if (error) alert(error.message);
 });
 
-supabaseClient.auth.onAuthStateChange((event,session) => {
+supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session?.user) {
-    showApp(session.user);
+    if (currentUser?.id !== session.user.id) {
+      showApp(session.user);
+    }
   } else {
-    showAuth();
+    if (currentUser) {
+      showAuth();
+    }
   }
 });
-
 async function loadMemories() {
   if (!currentUser) return;
 
