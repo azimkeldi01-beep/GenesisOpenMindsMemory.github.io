@@ -1,1748 +1,1675 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4263eb">
 <title>Genesis — Open Minds Memory</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-/* ===== GENESIS REDESIGN: WIDE & MODERN ===== */
-
-/* Более просторная ширина сайта */
-.container {
-  width: min(1360px, calc(100% - 64px));
-}
-
-/* Главный экран */
-.hero {
-  padding: 90px 0;
-}
-
-.hero-inner {
-  grid-template-columns: 1.15fr .85fr;
-  gap: 70px;
-}
-
-.hero-art {
-  max-width: 560px;
-  justify-self: end;
-  width: 100%;
-}
-
-.art-card {
-  height: 180px;
-  border-radius: 24px;
-}
-
-/* Пространство с папками */
-#studio {
-  padding: 75px 0;
-}
-
-#privateStudio > .card {
-  max-width: 1100px !important;
-  padding: 34px;
-  border-radius: 24px;
-}
-
-#privateStudio h3 {
-  font-size: 19px;
-}
-
-/* Папки — широкие, горизонтальные */
-.folder-list {
-  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
-  gap: 15px;
-}
-
-.folder-item {
-  min-height: 105px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  text-align: left;
-  border-radius: 17px;
-  transition: .25s ease;
-}
-
-.folder-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(45, 75, 150, .09);
-}
-
-.folder-icon {
-  width: 49px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 7px;
-  margin: 0;
-}
-
-.folder-item strong {
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.folder-item small {
-  display: block;
-  margin-top: 5px;
-  font-size: 11px;
-}
-
-/* Дневник */
-.archive {
-  padding: 75px 0;
-}
-
-.archive-grid {
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 22px;
-}
-
-.day-card {
-  border-radius: 19px;
-  transition: .25s ease;
-}
-
-.day-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(35, 55, 90, .1);
-}
-
-.day-cover {
-  height: 175px;
-}
-
-.day-info {
-  padding: 20px;
-}
-
-.day-info h3 {
-  font-size: 16px;
-}
-
-.day-info p {
-  line-height: 1.65;
-  font-size: 13px;
-}
-
-/* Большое окно папки */
-.modal {
-  padding: 28px;
-}
-
-.modal-box.wide {
-  width: min(1040px, 100%);
-  max-height: 92vh;
-  border-radius: 24px;
-  overflow-y: auto;
-  box-shadow: 0 30px 100px rgba(10, 20, 50, .25);
-}
-
-.folder-modal-header {
-  padding: 30px 75px 25px 32px;
-  gap: 20px;
-}
-
-.folder-modal-header .folder-icon {
-  width: 55px;
-  height: 40px;
-  border-radius: 8px;
-}
-
-.folder-modal-header h2 {
-  font-size: 25px;
-  letter-spacing: -.7px;
-}
-
-.folder-modal-body {
-  padding: 32px;
-}
-
-.folder-modal-body textarea {
-  min-height: 160px;
-  line-height: 1.7;
-}
-
-.drop {
-  padding: 30px;
-  border-radius: 16px;
-  transition: .2s;
-}
-
-.file-item {
-  border-radius: 11px;
-  padding: 11px 13px;
-}
-
-/* Поля и кнопки */
-input,
-textarea,
-select {
-  border-radius: 12px;
-  padding: 14px;
-}
-
-.btn {
-  border-radius: 12px;
-}
-
-.card {
-  border-radius: 22px;
-}
-
-/* Планшеты */
-@media (max-width: 800px) {
-  .container {
-    width: min(100% - 36px, 700px);
-  }
-
-  .hero {
-    padding: 65px 0;
-  }
-
-  .hero-inner {
-    gap: 35px;
-  }
-
-  .hero-art {
-    justify-self: center;
-  }
-
-  .folder-list {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-}
-
-/* Телефоны */
-@media (max-width: 550px) {
-  .container {
-    width: calc(100% - 28px);
-  }
-
-  .hero {
-    padding: 48px 0;
-  }
-
-  #studio,
-  .archive {
-    padding: 45px 0;
-  }
-
-  #privateStudio > .card {
-    padding: 20px;
-  }
-
-  .folder-list {
-    grid-template-columns: 1fr;
-  }
-
-  .folder-item {
-    min-height: 85px;
-    padding: 16px;
-  }
-
-  .archive-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .day-cover {
-    height: 125px;
-  }
-
-  .day-info {
-    padding: 13px;
-  }
-
-  .day-info h3 {
-    font-size: 13px;
-  }
-
-  .day-info p {
-    font-size: 11px;
-  }
-
-  .modal {
-    padding: 8px;
-  }
-
-  .modal-box.wide {
-    width: 100%;
-    max-height: 96vh;
-    border-radius: 19px;
-  }
-
-  .folder-modal-header {
-    padding: 22px 60px 18px 18px;
-  }
-
-  .folder-modal-header h2 {
-    font-size: 20px;
-  }
-
-  .folder-modal-body {
-    padding: 19px;
-  }
-}
-
-/* Маленькие экраны */
-@media (max-width: 350px) {
-  .archive-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 <style>
-:root{
- --primary:#4263eb;
- --primary-dark:#304fc5;
- --lime:#c8f169;
- --bg:#f5f7fb;
- --surface:#fff;
- --text:#182238;
- --muted:#8490a5;
- --border:#e8edf4;
- --shadow:0 8px 30px rgba(35,55,90,.06);
+:root {
+  --primary:#4263eb;
+  --primary-dark:#304fc5;
+  --lime:#c8f169;
+  --bg:#f5f7fb;
+  --surface:#fff;
+  --text:#182238;
+  --muted:#8490a5;
+  --border:#e8edf4;
+  --radius:18px;
+  --shadow:0 8px 30px rgba(35,55,90,.06);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+  min-height:100vh;
+}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
-.hidden,[hidden]{display:none!important}
-.container{width:min(1180px,calc(100% - 36px));margin:auto}
-
+button:disabled{opacity:.5;cursor:not-allowed}
+.hidden{display:none!important}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
 header{
- background:#ffffffed;
- border-bottom:1px solid var(--border);
- position:sticky;
- top:0;
- z-index:10;
- backdrop-filter:blur(12px)
+  background:rgba(255,255,255,.9);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);
 }
 .nav{
- min-height:72px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:15px
+  min-height:76px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
 }
-.brand{
- font-weight:800;
- font-size:21px;
- letter-spacing:-1px;
- text-decoration:none;
- color:var(--text)
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px}
+.brand-icon{
+  width:39px;height:39px;border-radius:13px;background:var(--primary);
+  color:white;display:grid;place-items:center;font-size:21px;
 }
-.brand span{color:var(--primary)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:3px}
 .nav-right{display:flex;align-items:center;gap:12px}
-.user-email{
- font-size:12px;
- color:var(--muted);
- max-width:180px;
- overflow:hidden;
- text-overflow:ellipsis
-}
-
-.btn{
- border:1px solid var(--border);
- background:#fff;
- color:var(--text);
- padding:11px 17px;
- border-radius:10px;
- font-size:13px;
- font-weight:650;
- transition:.2s
-}
-.btn:hover{transform:translateY(-1px);background:#f0f3f8}
-.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
-.btn.primary:hover{background:var(--primary-dark)}
-.btn.lime{background:var(--lime);border-color:var(--lime);color:#26351a}
-.btn.danger{color:#bd4a4a}
-.btn.small{padding:8px 12px;font-size:12px}
-.btn.full{width:100%;margin-top:12px}
-
+.user-email{font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+main{padding:38px 0 70px}
 .hero{
- padding:75px 0;
- background:linear-gradient(120deg,#3456d9,#5477f4);
- color:#fff;
- overflow:hidden
+  background:linear-gradient(120deg,#3456d9,#5477f4);
+  color:white;border-radius:25px;padding:38px 42px;
+  position:relative;overflow:hidden;margin-bottom:30px;
 }
-.hero-inner{
- display:grid;
- grid-template-columns:1.2fr .8fr;
- align-items:center;
- gap:40px
+.hero:after{
+  content:"✦";position:absolute;right:8%;top:-60px;
+  font-size:240px;color:rgba(255,255,255,.08);
 }
 .eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;opacity:.75}
-.hero h1{
- font-size:clamp(36px,6vw,65px);
- line-height:1.05;
- margin:18px 0;
- letter-spacing:-3px
+.hero h1{font-size:clamp(28px,4vw,43px);margin:15px 0 10px;max-width:650px}
+.hero p{color:#e2e9ff;line-height:1.7;max-width:550px;font-size:14px}
+.hero-tag{
+  display:inline-block;background:var(--lime);color:#26351b;
+  padding:9px 13px;border-radius:9px;font-size:11px;font-weight:800;margin-top:8px;
 }
-.hero p{max-width:570px;color:#e4eaff;line-height:1.8;font-size:14px}
-.hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
-.hero-art{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
- transform:rotate(-3deg)
-}
-.art-card{
- height:150px;
- border-radius:18px;
- background:linear-gradient(140deg,#d8e4ff,#9cb4ff);
- box-shadow:0 15px 35px #172e7c30
-}
-.art-card:nth-child(2){background:linear-gradient(140deg,#c8f169,#91b947);margin-top:25px}
-.art-card:nth-child(3){background:linear-gradient(140deg,#b9caff,#738ee8);margin-top:-15px}
-.art-card:nth-child(4){background:linear-gradient(140deg,#f0f3ff,#b9c8f6)}
-
-section{padding:55px 0}
-.section-title{margin-bottom:25px}
-.section-title h2{
- font-size:clamp(27px,4vw,38px);
- letter-spacing:-1.5px;
- margin:8px 0
-}
-.section-title p{font-size:13px;color:var(--muted)}
-.eyebrow.blue{color:var(--primary);opacity:1}
-
+.section{margin-top:34px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:18px}
+.section-head h2{font-size:23px;margin:8px 0 5px}
+.section-head p{color:var(--muted);font-size:12px;margin:0;line-height:1.6}
 .card{
- background:var(--surface);
- border:1px solid var(--border);
- border-radius:18px;
- padding:22px;
- box-shadow:var(--shadow);
- min-width:0
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:23px;box-shadow:var(--shadow);
 }
-.card h3{font-size:17px;margin:0 0 15px}
-
-label{display:block;font-size:12px;font-weight:650;margin:14px 0 7px}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:22px}
+label{display:block;font-size:12px;font-weight:700;margin:17px 0 8px}
 input,textarea,select{
- width:100%;
- padding:12px;
- border:1px solid var(--border);
- border-radius:10px;
- background:#fff;
- color:var(--text);
- font-size:13px;
- outline:none
+  width:100%;border:1px solid var(--border);border-radius:11px;
+  padding:13px 14px;background:#fbfcfe;color:var(--text);outline:none;
+  transition:.2s;
 }
-input:focus,textarea:focus,select:focus{
- border-color:var(--primary);
- box-shadow:0 0 0 3px #4263eb18
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #4263eb15}
+textarea{resize:vertical;min-height:100px}
+input[type=file]{padding:10px}
+.btn{
+  border:0;border-radius:11px;padding:12px 17px;
+  font-size:12px;font-weight:700;transition:.2s;
 }
-textarea{min-height:120px;resize:vertical}
-
-.palette{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.btn:hover{transform:translateY(-1px)}
+.primary{background:var(--primary);color:white}
+.primary:hover{background:var(--primary-dark)}
+.secondary{background:#edf1ff;color:var(--primary)}
+.danger{background:#fff0f0;color:#d84c4c}
+.ghost{background:#f2f4f8;color:#536078}
+.full{width:100%;margin-top:17px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.colors{display:flex;gap:10px;flex-wrap:wrap}
 .color{
- width:28px;
- height:28px;
- border-radius:50%;
- border:2px solid white;
- outline:1px solid var(--border);
- padding:0
+  width:29px;height:29px;border-radius:50%;border:3px solid white;
+  outline:1px solid var(--border);cursor:pointer;
 }
 .color.active{outline:2px solid var(--primary)}
-
-.folder-list{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:10px;
- margin-top:15px
+.mood-row{display:flex;gap:9px;flex-wrap:wrap}
+.mood{
+  border:1px solid var(--border);background:white;border-radius:10px;
+  padding:9px 12px;font-size:17px;
 }
-.folder-item{
- border:1px solid var(--border);
- border-radius:12px;
- padding:15px 8px;
- text-align:center;
- cursor:pointer;
- min-width:0;
- background:#fff;
- transition:.2s
+.mood.active{background:#edf1ff;border-color:var(--primary)}
+.grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;
 }
-.folder-item:hover{
- border-color:var(--primary);
- background:#f1f4ff;
- transform:translateY(-2px)
+.memory-card{
+  border:1px solid var(--border);border-radius:17px;background:white;
+  padding:19px;cursor:pointer;transition:.2s;min-width:0;
 }
-.folder-icon{
- width:42px;
- height:30px;
- border-radius:5px;
- background:var(--folder-color);
- margin:0 auto 9px;
- position:relative
+.memory-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c9d4ff}
+.memory-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.memory-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.memory-card h3{font-size:16px;margin:16px 0 8px;overflow-wrap:anywhere}
+.memory-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0;overflow-wrap:anywhere}
+.memory-date{font-size:10px;color:var(--muted);margin-top:16px}
+.pill{
+  display:inline-block;padding:5px 8px;border-radius:6px;
+  background:#edf1ff;color:var(--primary);font-size:9px;font-weight:800;
 }
-.folder-icon:before{
- content:"";
- position:absolute;
- top:-5px;
- left:0;
- width:18px;
- height:8px;
- background:inherit;
- border-radius:4px 4px 0 0
+.empty{
+  grid-column:1/-1;text-align:center;color:var(--muted);
+  padding:35px 15px;font-size:13px;border:1px dashed #d8deea;border-radius:15px;
 }
-.folder-item strong{
- font-size:11px;
- display:block;
- overflow-wrap:anywhere
+.share-panel{margin-top:25px;padding-top:20px;border-top:1px solid var(--border)}
+.share-list{display:grid;gap:9px;margin-top:12px}
+.share-item{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px;background:#f5f7f8;border-radius:9px;font-size:11px;
+  overflow-wrap:anywhere;
 }
-.folder-item small{font-size:10px;color:var(--muted)}
-
-.notice{
- padding:18px;
- background:#f2f5fc;
- border:1px solid var(--border);
- border-radius:12px;
- color:var(--muted);
- font-size:13px;
- text-align:center
+.file-list{display:grid;gap:8px;margin-top:12px}
+.file-item{font-size:11px;padding:10px;background:#f5f7fa;border-radius:9px;overflow-wrap:anywhere}
+.file-item a{color:var(--primary);text-decoration:none}
+.shared-label{
+  display:inline-block;margin-top:7px;padding:4px 8px;
+  background:#e9eef2;color:var(--primary);border-radius:5px;
+  font-size:10px;font-weight:700;
 }
-.empty{text-align:center;padding:35px 15px;color:var(--muted)}
-.empty-icon{font-size:38px;margin-bottom:10px}
-
-.archive{background:#edf1f8}
-.archive-grid{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
- gap:16px
-}
-.day-card{
- background:#fff;
- border:1px solid var(--border);
- border-radius:14px;
- overflow:hidden;
- cursor:pointer;
- transition:.2s
-}
-.day-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.day-cover{
- height:135px;
- background:var(--cover-color,#4263eb);
- display:grid;
- place-items:center;
- color:#fff;
- font-size:35px;
- background-size:cover;
- background-position:center
-}
-.day-info{padding:15px}
-.day-info h3{
- font-size:15px;
- margin:0 0 5px;
- overflow-wrap:anywhere
-}
-.day-info small{font-size:10px;color:var(--muted)}
-.day-info p{
- font-size:12px;
- color:#65718a;
- margin:9px 0 0;
- overflow-wrap:anywhere
-}
-
-footer{text-align:center;padding:25px;color:var(--muted);font-size:11px;background:#fff}
-
-/* ОКНО ПАПКИ */
+footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font-size:11px;text-align:center}
 .modal{
- position:fixed;
- inset:0;
- background:#101b35b8;
- z-index:30;
- display:none;
- align-items:center;
- justify-content:center;
- padding:18px;
- backdrop-filter:blur(5px)
+  position:fixed;inset:0;background:#111827a8;z-index:30;
+  display:flex;align-items:center;justify-content:center;padding:18px;
 }
-.modal.open{display:flex}
 .modal-box{
- width:min(440px,100%);
- max-height:92vh;
- overflow:auto;
- background:#fff;
- border-radius:18px;
- padding:25px;
- position:relative
+  background:white;width:min(650px,100%);max-height:90vh;overflow:auto;
+  border-radius:20px;padding:25px;
 }
-.modal-box.wide{
- width:min(850px,100%);
- padding:0
+.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{font-size:21px;margin:0}
+.media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.media-grid img,.media-grid video{
+  width:100%;max-height:260px;object-fit:contain;background:#f2f4f8;border-radius:12px;
 }
-.close{
- position:absolute;
- right:14px;
- top:14px;
- border:0;
- background:#edf1f8;
- border-radius:9px;
- width:36px;
- height:36px;
- font-size:23px;
- z-index:5;
- color:var(--text)
+.notice{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}
+.auth-card{width:min(420px,100%);background:white;border:1px solid var(--border);border-radius:23px;padding:30px;box-shadow:var(--shadow)}
+.auth-card h1{font-size:25px;margin:20px 0 8px}
+.auth-card p{color:var(--muted);font-size:12px;line-height:1.7}
+.auth-switch{text-align:center;font-size:12px;margin-top:20px;color:var(--muted)}
+.auth-switch a{color:var(--primary);font-weight:700;cursor:pointer}
+.status{font-size:12px;line-height:1.5;margin-top:12px;color:var(--primary);min-height:18px}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-.close:hover{background:#e1e7f2}
-.folder-modal-header{
- padding:25px 65px 20px 25px;
- border-bottom:1px solid var(--border);
- display:flex;
- align-items:center;
- gap:15px
+@media(max-width:560px){
+  .container{width:calc(100% - 24px)}
+  main{padding:20px 0 45px}
+  .nav{min-height:65px}
+  .brand{font-size:15px}
+  .brand-icon{width:34px;height:34px}
+  .user-email{display:none}
+  .hero{padding:27px 22px;border-radius:19px}
+  .hero h1{font-size:29px}
+  .hero p{font-size:12px}
+  .section-head h2{font-size:20px}
+  .card{padding:17px}
+  .grid{grid-template-columns:1fr}
+  .section-head{align-items:start;flex-direction:column}
+  .actions .btn{flex:1}
+  .media-grid{grid-template-columns:1fr}
+  .modal-box{padding:19px}
 }
-.folder-modal-header .folder-icon{flex-shrink:0;margin:0}
-.folder-modal-header h2{font-size:21px;margin:0;overflow-wrap:anywhere}
-.folder-modal-header p{font-size:11px;color:var(--muted);margin:5px 0 0}
-.folder-modal-body{padding:25px}
-.drop{
- border:1px dashed #aab6ca;
- border-radius:12px;
- padding:22px;
- text-align:center;
- background:#f8f9fc;
- margin-top:15px;
- color:var(--muted);
- font-size:12px
-}
-.drop input{display:none}
-.file-list{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-.file-item{
- background:#edf1fa;
- border-radius:9px;
- padding:9px 10px;
- font-size:11px;
- max-width:100%;
- overflow-wrap:anywhere
-}
-.file-item button{
- border:0;
- background:none;
- color:#c44;
- margin-left:7px;
- font-size:15px
-}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.actions{
- display:flex;
- justify-content:space-between;
- gap:10px;
- flex-wrap:wrap;
- margin-top:20px
-}
-.status{font-size:12px;color:var(--muted);min-height:18px;margin:12px 0}
-.status.error{color:#bd4a4a}
-.status.success{color:#39815e}
 
-.tabs{display:flex;background:#edf1f8;border-radius:10px;padding:4px;margin:17px 0}
-.tabs button{
- flex:1;
- border:0;
- background:none;
- padding:9px;
- border-radius:8px;
- font-size:12px
-}
-.tabs button.active{background:#fff;color:var(--primary);font-weight:700}
+/* Shared folders */
+.shared-folder-layout{display:grid;grid-template-columns:minmax(230px,.75fr) minmax(0,1.5fr);gap:18px}
+.shared-folder-list{display:grid;gap:9px;margin-top:14px}
+.shared-folder-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;border:1px solid var(--border);border-radius:12px;background:#fbfcff}
+.shared-folder-card button{min-width:0;text-align:left;flex:1;background:none;border:0;color:var(--text);font-weight:700;overflow-wrap:anywhere}
+.shared-folder-card small{display:block;color:var(--muted);font-weight:500;margin-top:5px}
+.shared-workspace{min-width:0}
+.shared-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.shared-breadcrumb{font-size:12px;color:var(--muted);margin:10px 0}
+.shared-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.shared-item{min-width:0;padding:14px;border:1px solid var(--border);border-radius:12px;background:#fff}
+.shared-item strong{display:block;overflow-wrap:anywhere}
+.shared-item small{display:block;color:var(--muted);margin-top:6px;overflow-wrap:anywhere}
+.shared-item .actions{margin-top:10px}
+.shared-members{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.shared-member{font-size:10px;background:#edf1ff;color:var(--primary);padding:6px 9px;border-radius:20px}
+.shared-invite{display:flex;gap:8px;align-items:center;margin-top:12px}
+.shared-invite input{flex:1;min-width:0}
+@media(max-width:700px){.shared-folder-layout{grid-template-columns:1fr}.shared-items{grid-template-columns:1fr}.shared-invite{flex-direction:column;align-items:stretch}}
 
-.toast{
- position:fixed;
- bottom:20px;
- left:50%;
- transform:translate(-50%,20px);
- background:#182238;
- color:#fff;
- padding:12px 18px;
- border-radius:10px;
- font-size:12px;
- opacity:0;
- transition:.2s;
- z-index:50;
- pointer-events:none;
- max-width:90%;
- text-align:center
-}
-.toast.show{opacity:1;transform:translate(-50%,0)}
 
-@media(max-width:800px){
- .hero-inner{grid-template-columns:1fr}
- .hero-art{max-width:420px}
+/* GENESIS — blue + lime visual theme */
+:root{
+  --primary:#4263eb;--primary-dark:#304fc5;--lime:#c8f169;
+  --bg:#f4f6fb;--surface:#fff;--text:#182238;--muted:#8490a5;
+  --border:#e5eaf3;--radius:20px;--shadow:0 12px 34px rgba(35,55,90,.08);
 }
-@media(max-width:550px){
- .nav{min-height:65px}
- .brand{font-size:17px}
- .user-email{max-width:100px}
- .hero{padding:50px 0}
- .hero h1{letter-spacing:-2px}
- .art-card{height:110px}
- .row{grid-template-columns:1fr;gap:0}
- .folder-modal-body{padding:17px}
- .folder-modal-header{padding:20px 60px 17px 17px}
- .modal{padding:8px}
- .modal-box.wide{max-height:96vh}
- .card{padding:16px}
- .actions .btn{flex:1}
- .archive-grid{grid-template-columns:1fr 1fr}
- .day-cover{height:105px}
- .day-info{padding:11px}
-}
-@media(max-width:350px){
- .archive-grid{grid-template-columns:1fr}
-}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);letter-spacing:-.015em}
+.container{width:min(1180px,calc(100% - 40px))}
+header{background:rgba(255,255,255,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(18px)}
+.brand{letter-spacing:-.04em}
+.brand-icon{border-radius:13px;background:linear-gradient(145deg,#5276f5,#3456d9);box-shadow:0 6px 18px #4263eb30}
+main{padding:30px 0 76px}
+.hero{min-height:430px;border:0;border-radius:0;padding:clamp(32px,6vw,76px);background:linear-gradient(120deg,#3456d9,#5276f5);box-shadow:none}
+.hero:after{content:"✦";right:5%;top:-55px;font-size:clamp(160px,24vw,270px);color:rgba(255,255,255,.09)}
+.hero h1{font-size:clamp(42px,6vw,76px);font-weight:700;letter-spacing:-.065em;line-height:1.02}
+.hero p{color:#e7edff;line-height:1.85}
+.eyebrow{letter-spacing:.2em;font-size:9px}
+.hero-tag{background:var(--lime);color:#26351b;border-radius:12px;padding:11px 16px}
+.section{margin-top:52px}
+.section-head h2{font-size:clamp(25px,3vw,34px);letter-spacing:-.05em}
+.card,.auth-card,.memory-card,.shared-item{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);color:var(--text)}
+.card{padding:clamp(20px,3vw,30px)}
+label{color:#35415a}
+input,textarea,select{color:var(--text);background:#fbfcff;border:1px solid var(--border);border-radius:12px;padding:14px}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #4263eb18}
+.btn{border-radius:12px;text-transform:none;letter-spacing:0;font-size:12px}
+.primary{background:var(--primary);color:#fff}.primary:hover{background:var(--primary-dark)}
+.secondary{background:#edf1ff;color:var(--primary);border:1px solid #dfe6ff}
+.ghost{background:#f2f4f8;color:#536078;border:1px solid var(--border)}
+.danger{background:#fff0f0;color:#d84c4c}
+.memory-card{padding:21px;border-radius:18px;transition:transform .2s,box-shadow .2s}
+.memory-card:before{content:none}
+.memory-card:hover{transform:translateY(-4px);border-color:#c9d4ff;box-shadow:0 16px 36px rgba(35,55,90,.12)}
+.memory-card h3{color:var(--text);font-weight:700}.memory-card p,.memory-date{color:var(--muted)}
+.pill,.shared-member{background:#edf1ff;color:var(--primary);border:1px solid #dfe6ff}
+.empty{border-radius:16px;color:var(--muted);border-color:#d8deea}
+.mood{background:#fff;color:var(--text);border-color:var(--border);border-radius:12px}
+.mood.active{background:#edf1ff;border-color:var(--primary)}
+.color{border-color:#fff;outline-color:var(--border)}.color.active{outline-color:var(--primary)}
+.file-item,.share-item,.shared-folder-card{background:#f7f9fd;color:var(--text);border:1px solid var(--border);border-radius:12px}
+.shared-folder-layout{grid-template-columns:1fr}
+.shared-folder-card{border-radius:14px;padding:15px}
+.shared-folder-card button{color:var(--text)}
+.shared-item{border-radius:15px}
+.shared-toolbar{border-top:1px solid var(--border);padding-top:15px}
+.shared-breadcrumb{color:var(--primary)}
+footer{border-top:1px solid var(--border);color:var(--muted);letter-spacing:.08em}
+.modal{background:rgba(20,32,60,.48);backdrop-filter:blur(8px)}
+.modal-box{background:#fff;color:var(--text);border:1px solid var(--border);border-radius:22px}
+.auth-wrap{background:radial-gradient(ellipse at 15% 10%,#e4eaff,transparent 38rem),var(--bg)}
+.auth-card{padding:34px;border-radius:23px}.auth-card h1{font-weight:700;letter-spacing:-.05em}.auth-card p{color:var(--muted)}
+.auth-switch{color:var(--muted)}.auth-switch a{color:var(--primary)}.status{color:var(--primary)}
+.shared-folder-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,32,60,.5);backdrop-filter:blur(9px)}
+.shared-folder-modal .shared-workspace{width:min(980px,100%);max-height:92vh;overflow:auto;padding:clamp(20px,3vw,32px);border-radius:22px}
+.shared-modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.shared-modal-head h3{margin:0;font-size:23px}
+.shared-folder-modal .shared-items{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.modal-open{overflow:hidden}
+@media(max-width:850px){.container{width:min(100% - 32px,700px)}.hero{min-height:370px}}
+@media(max-width:560px){.container{width:calc(100% - 24px)}.hero{min-height:390px;padding:28px 22px}.hero h1{font-size:clamp(38px,11vw,55px)}.section{margin-top:42px}.card{padding:18px}.auth-card{padding:25px}.shared-folder-modal{padding:10px}.shared-folder-modal .shared-workspace{max-height:96vh;padding:18px}.shared-folder-modal .shared-items{grid-template-columns:1fr}}
+
 </style>
 </head>
 
 <body>
 
+<!-- AUTH -->
+<div id="authScreen" class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <div>GENESIS<small>OPEN MINDS MEMORY</small></div>
+    </div>
+    <h1 id="authTitle">Добро пожаловать</h1>
+    <p id="authDescription">Сохраняйте важные моменты своей жизни в одном месте.</p>
+    <form id="authForm">
+      <label>Электронная почта</label>
+      <input id="authEmail" type="email" placeholder="name@example.com" required>
+      <label>Пароль</label>
+      <input id="authPassword" type="password" placeholder="Минимум 6 символов" minlength="6" required>
+      <button id="authButton" class="btn primary full" type="submit">Войти</button>
+    </form>
+    <div id="authStatus" class="status"></div>
+    <div class="auth-switch">
+      <span id="switchText">Нет аккаунта?</span>
+      <a id="switchAuth">Зарегистрироваться</a>
+    </div>
+    <!-- APPLICATION -->
+<div id="appScreen" class="hidden">
 <header>
- <div class="container nav">
-  <a class="brand" href="#home">GENESIS<span>✦</span></a>
-  <div class="nav-right" id="userBox">
-   <button class="btn small" onclick="openAuth('login')">Войти</button>
+  <div class="container nav">
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <div>GENESIS<small>OPEN MINDS MEMORY</small></div>
+    </div>
+    <div class="nav-right">
+      <span id="userEmail" class="user-email"></span>
+      <button class="btn ghost" id="logoutButton">Выйти</button>
+    </div>
   </div>
- </div>
 </header>
 
-<section class="hero" id="home">
- <div class="container hero-inner">
-  <div>
-   <div class="eyebrow">GENESIS OPEN MINDS · DIGITAL MEMORY</div>
-   <h1>Твои моменты.<br>Твоя история.</h1>
-   <p>Личное облачное пространство для воспоминаний. Сохраняй фотографии, тексты, музыку и важные моменты своей жизни в одном месте.</p>
-   <div class="hero-buttons">
-    <button class="btn lime" onclick="goToWorkspace()">Создать воспоминание</button>
-    <button class="btn" onclick="openAuth('register')">Создать аккаунт</button>
-   </div>
-  </div>
-  <div class="hero-art">
-   <div class="art-card"></div>
-   <div class="art-card"></div>
-   <div class="art-card"></div>
-   <div class="art-card"></div>
-  </div>
- </div>
-</section>
+<main class="container">
+  <section class="hero">
+    <div class="eyebrow">YOUR PERSONAL MEMORY SPACE</div>
+    <h1>Каждый момент<br>заслуживает памяти.</h1>
+    <p>Создавайте собственную коллекцию воспоминаний, сохраняйте фотографии и делитесь важными моментами с близкими.</p>
+    <span class="hero-tag">✦ YOUR STORY. YOUR SPACE.</span>
+  </section>
 
-<!-- СОЗДАНИЕ ПАПОК -->
-<section id="studio">
- <div class="container">
+  <section class="layout">
+    <div class="card">
+      <div class="eyebrow" style="color:var(--primary)">01 / MEMORY EDITOR</div>
+      <h2 style="font-size:21px;margin:9px 0">Создать воспоминание</h2>
+      <p class="notice">Заполните информацию о моменте, который хотите сохранить.</p>
 
-  <div id="signedOutNotice" class="notice">
-   Чтобы пользоваться пространством, войди или зарегистрируйся.
-   <button class="btn primary small" onclick="openAuth('login')">Войти</button>
-  </div>
+      <form id="memoryForm">
+        <label>Название</label>
+        <input id="memoryName" maxlength="100" placeholder="Например, летний вечер..." required>
 
-  <div id="privateStudio" hidden>
-   <div class="card" style="max-width:850px;margin:auto">
-    <h3>＋ Создать новую папку</h3>
+        <label>Описание</label>
+        <textarea id="memoryDescription" maxlength="5000" placeholder="Что произошло? Почему это важно?"></textarea>
 
-    <form id="folderForm">
-     <label for="folderName">Название папки</label>
-     <input id="folderName" maxlength="60" placeholder="Например, Лето 2026" required>
+        <label>Настроение</label>
+        <div class="mood-row" id="moodRow">
+          <button type="button" class="mood active" data-mood="😊">😊</button>
+          <button type="button" class="mood" data-mood="❤️">❤️</button>
+          <button type="button" class="mood" data-mood="🥹">🥹</button>
+          <button type="button" class="mood" data-mood="✨">✨</button>
+          <button type="button" class="mood" data-mood="🌧️">🌧️</button>
+          <button type="button" class="mood" data-mood="🎉">🎉</button>
+        </div>
 
-     <label>Цвет папки</label>
-     <div class="palette" id="palette"></div>
+        <label>Цвет карточки</label>
+        <div class="colors" id="colors">
+          <button type="button" class="color active" data-color="#8f1725" style="background:#8f1725"></button>
+          <button type="button" class="color" data-color="#e879a9" style="background:#e879a9"></button>
+          <button type="button" class="color" data-color="#e6a23c" style="background:#e6a23c"></button>
+          <button type="button" class="color" data-color="#42a98b" style="background:#42a98b"></button>
+          <button type="button" class="color" data-color="#9b79dc" style="background:#9b79dc"></button>
+          <button type="button" class="color" data-color="#344054" style="background:#344054"></button>
+        </div>
 
-     <button class="btn primary" id="createFolderBtn" type="submit">＋ Создать папку</button>
-    </form>
+        <label>Музыка или ссылка (необязательно)</label>
+        <input id="songUrl" type="url" placeholder="https://...">
+        <input id="songInfo" placeholder="Название песни или исполнителя">
 
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:30px">
-     <h3 style="margin:0">Мои папки</h3>
-     <span id="folderCount" style="font-size:11px;color:var(--muted)">0 папок</span>
+        <label>Фотографии и видео</label>
+        <input id="memoryFiles" type="file" multiple accept="image/*,video/*">
+        <div id="selectedFiles" class="notice">Файлы пока не выбраны.</div>
+        <div id="existingFiles" class="file-list"></div>
+
+        <div class="actions">
+          <button type="submit" class="btn primary" id="saveButton">Сохранить воспоминание</button>
+          <button type="button" class="btn ghost" id="newButton">Новое</button>
+          <button type="button" class="btn danger" id="deleteButton" disabled>Удалить</button>
+        </div>
+      </form>
+
+      <div id="memoryStatus" class="status"></div>
+
+      <div class="share-panel" id="sharePanel">
+        <h3 style="font-size:15px">Совместный доступ</h3>
+        <p class="notice">Поделитесь воспоминанием с зарегистрированным пользователем. Он сможет просматривать его, но не редактировать.</p>
+        <label for="shareEmail">Электронная почта получателя</label>
+        <input id="shareEmail" type="email" placeholder="friend@example.com">
+        <button class="btn secondary full" type="button" id="shareButton">Поделиться воспоминанием</button>
+        <div id="shareList" class="share-list"></div>
+        <div id="shareStatus" class="status"></div>
+      </div>
     </div>
 
-    <div class="folder-list" id="folderList"></div>
-   </div>
-  </div>
-
- </div>
-</section>
-
-<!-- ДНЕВНИК -->
-<section class="archive" id="archive">
- <div class="container">
-  <div class="section-title">
-   <div class="eyebrow blue">PERSONAL ARCHIVE</div>
-   <h2>Мой дневник</h2>
-   <p>Все твои папки и сохранённые воспоминания в одном месте.</p>
-  </div>
-
-  <div id="archiveSignedOut" class="notice">
-   Дневник доступен после входа в аккаунт.
-   <button class="btn primary small" onclick="openAuth('login')">Войти</button>
-  </div>
-
-  <div class="archive-grid" id="archiveGrid" hidden></div>
- </div>
-</section>
-
-<footer>GENESIS · OPEN MINDS MEMORY</footer>
-
-<!-- ОКНО РЕДАКТИРОВАНИЯ ПАПКИ -->
-<div class="modal" id="folderModal">
- <div class="modal-box wide">
-
-  <button class="close" type="button" onclick="closeFolder()">×</button>
-
-  <div class="folder-modal-header">
-   <div class="folder-icon" id="editorIcon"></div>
-   <div>
-    <h2 id="editorTitle">Название папки</h2>
-    <p id="editorDate"></p>
-   </div>
-  </div>
-
-  <div class="folder-modal-body">
-
-   <label for="dayText">Описание воспоминания</label>
-   <textarea id="dayText" maxlength="10000" placeholder="Расскажи, что произошло..."></textarea>
-
-   <div class="drop" id="drop">
-    <p><b>Добавить фотографии, видео или аудио</b></p>
-    <p>Выбери файлы со своего устройства. Максимальный размер — 25 МБ на файл.</p>
-    <button class="btn small" type="button" id="chooseFiles">Выбрать файлы</button>
-    <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple>
-   </div>
-
-   <div class="file-list" id="fileList"></div>
-
-   <div class="row">
-    <div>
-     <label for="songUrl">Ссылка на музыку</label>
-     <input id="songUrl" type="url" placeholder="https://...">
+    <div class="card">
+      <div class="eyebrow" style="color:var(--primary)">02 / YOUR COLLECTION</div>
+      <h2 style="font-size:21px;margin:9px 0">Мои воспоминания</h2>
+      <p class="notice">Все моменты, которые вы сохранили.</p>
+      <div id="myMemoryGrid" class="grid" style="grid-template-columns:1fr;margin-top:18px">
+        <div class="empty">Загрузка...</div>
+      </div>
     </div>
-    <div>
-     <label for="songInfo">Название и исполнитель</label>
-     <input id="songInfo" maxlength="180" placeholder="Название песни">
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="color:var(--primary)">03 / SHARED MEMORIES</div>
+        <h2>Со мной поделились</h2>
+        <p>Воспоминания, которыми поделились другие пользователи.</p>
+      </div>
     </div>
-   </div>
-
-   <div class="row">
-    <div>
-     <label for="mood">Настроение</label>
-     <select id="mood">
-      <option value="">Не выбрано</option>
-      <option>Радость</option>
-      <option>Спокойствие</option>
-      <option>Ностальгия</option>
-      <option>Вдохновение</option>
-      <option>Грусть</option>
-      <option>Приключение</option>
-     </select>
+    <div id="sharedArchiveGrid" class="grid">
+      <div class="empty">Загрузка...</div>
     </div>
+  </section>
 
-    <div>
-     <label for="weather">Атмосфера</label>
-     <select id="weather">
-      <option value="">Не выбрано</option>
-      <option>Солнечно</option>
-      <option>Облачно</option>
-      <option>Дождливо</option>
-      <option>Снежно</option>
-      <option>Вечер</option>
-      <option>Ночь</option>
-     </select>
+  <section class="section" id="sharedFoldersSection">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="color:var(--primary)">04 / TEAM MEMORY SPACE</div>
+        <h2>Общие папки</h2>
+        <p>Создавайте пространство для общих воспоминаний — до 4 участников в каждой папке.</p>
+      </div>
     </div>
-   </div>
+    <div class="shared-folder-layout">
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:16px">Создать общую папку</h3>
+        <form id="sharedFolderCreateForm">
+          <label for="sharedFolderName">Название папки</label>
+          <input id="sharedFolderName" maxlength="80" placeholder="Например, Наши моменты" required>
+          <button class="btn primary full" type="submit" id="createSharedFolderButton">Создать папку</button>
+        </form>
+        <div id="sharedFolderStatus" class="status"></div>
+        <div class="share-panel">
+          <h3 style="font-size:15px">Мои общие папки</h3>
+          <div id="sharedFolderList" class="shared-folder-list">
+            <div class="empty">Загрузка...</div>
+          </div>
+        </div>
+        <div class="share-panel">
+          <h3 style="font-size:15px">Присоединиться по приглашению</h3>
+          <label for="sharedInviteInput">Ссылка или код приглашения</label>
+          <input id="sharedInviteInput" placeholder="Вставьте ссылку или код">
+          <button class="btn secondary full" type="button" id="acceptSharedInviteButton">Принять приглашение</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-   <p class="status" id="saveStatus" aria-live="polite"></p>
+</main>
 
-   <div class="actions">
-    <button class="btn danger" type="button" onclick="deleteCurrent()">Удалить папку</button>
-    <button class="btn primary" type="button" id="saveBtn" onclick="saveCurrent()">Сохранить воспоминание</button>
-   </div>
-
-  </div>
- </div>
+<footer>GENESIS OPEN MINDS MEMORY · YOUR STORY MATTERS</footer>
 </div>
 
-<!-- АВТОРИЗАЦИЯ -->
-<div class="modal" id="authModal">
- <div class="modal-box">
-  <button class="close" onclick="closeModal('authModal')">×</button>
-
-  <div class="eyebrow blue">PERSONAL ACCOUNT</div>
-  <h2 id="authTitle">Вход в аккаунт</h2>
-
-  <div class="tabs">
-   <button id="loginTab" class="active" type="button" onclick="switchAuth('login')">Вход</button>
-   <button id="registerTab" type="button" onclick="switchAuth('register')">Регистрация</button>
+<!-- SHARED FOLDER WORKSPACE MODAL -->
+<div id="sharedWorkspaceModal" class="shared-folder-modal hidden" role="dialog" aria-modal="true" aria-labelledby="sharedWorkspaceTitle">
+  <div class="card shared-workspace">
+    <div class="shared-modal-head">
+      <div><h3 id="sharedWorkspaceTitle">Выберите общую папку</h3></div>
+      <button class="btn ghost" type="button" id="closeSharedWorkspaceButton" aria-label="Закрыть окно">Закрыть ✕</button>
+    </div>
+    <p id="sharedWorkspaceDescription" class="notice">Здесь появятся материалы, которые добавили вы и другие участники.</p>
+    <div id="sharedMembers" class="shared-members"></div>
+    <div id="sharedInviteControls" class="hidden">
+      <button class="btn secondary" type="button" id="createSharedInviteButton">Создать ссылку-приглашение</button>
+      <div id="sharedInviteResult" class="shared-invite hidden">
+        <input id="sharedInviteLink" readonly aria-label="Ссылка-приглашение">
+        <button class="btn ghost" type="button" id="copySharedInviteButton">Копировать</button>
+      </div>
+    </div>
+    <div id="sharedWorkspace" class="hidden">
+      <div class="shared-toolbar">
+        <button class="btn ghost" type="button" id="sharedBackButton">← Назад</button>
+        <button class="btn secondary" type="button" id="createNestedFolderButton">＋ Папка</button>
+      </div>
+      <div id="sharedBreadcrumb" class="shared-breadcrumb"></div>
+      <form id="sharedNoteForm">
+        <label for="sharedNoteName">Добавить заметку</label>
+        <input id="sharedNoteName" maxlength="120" placeholder="Название заметки" required>
+        <textarea id="sharedNoteContent" maxlength="10000" placeholder="Напишите что-нибудь для всех участников..."></textarea>
+        <button class="btn primary" type="submit">Добавить заметку</button>
+      </form>
+      <div style="margin-top:18px">
+        <label for="sharedUploadInput">Загрузить фото, видео или файл</label>
+        <input id="sharedUploadInput" type="file" multiple>
+        <button class="btn secondary" type="button" id="uploadSharedFilesButton">Загрузить выбранные файлы</button>
+      </div>
+      <div id="sharedItems" class="shared-items">
+        <div class="empty">Выберите общую папку.</div>
+      </div>
+    </div>
+    <div id="sharedWorkspaceStatus" class="status"></div>
   </div>
-
-  <form id="authForm">
-   <div id="nameField" hidden>
-    <label for="authName">Имя</label>
-    <input id="authName" maxlength="60" placeholder="Твоё имя">
-   </div>
-
-   <label for="authEmail">Электронная почта</label>
-   <input id="authEmail" type="email" required placeholder="name@example.com">
-
-   <label for="authPassword">Пароль</label>
-   <input id="authPassword" type="password" minlength="8" required placeholder="Не менее 8 символов">
-
-   <button class="btn primary full" id="authSubmit" type="submit">Войти</button>
-  </form>
-
-  <p class="status" id="authMessage"></p>
-  <p style="font-size:11px;color:var(--muted)">При регистрации может потребоваться подтверждение электронной почты.</p>
- </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- VIEW MODAL -->
+<div id="viewModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="viewTitle"></h2>
+      <button class="btn ghost" id="closeModal">Закрыть ✕</button>
+    </div>
+    <div id="viewMeta" class="notice"></div>
+    <p id="viewDescription" style="font-size:14px;line-height:1.8;white-space:pre-wrap"></p>
+    <div id="viewSong"></div>
+    <div id="viewFiles" class="media-grid"></div>
+    <p id="viewSharedNote" class="notice"></p>
+  </div>
+</div>
 
 <script>
-/* SUPABASE */
 const SUPABASE_URL = "https://ydrzlazhucdlvvyjisnm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_l_aik6ePDy4GFPZRwBH1ZQ_9oSb_Dji";
-const BUCKET = "memory-files";
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const $ = s => document.querySelector(s);
+const $ = selector => document.querySelector(selector);
 
-const colors = [
- "#4263eb","#8c70d6","#55a58a","#e2a44b",
- "#df758b","#607d9e","#87954c","#526078"
-];
-
-let db = null;
 let currentUser = null;
 let folders = [];
+let sharedMemories = [];
+let myShares = [];
 let currentId = null;
 let currentFiles = [];
-let selectedColor = colors[0];
+let selectedColor = "#4263eb";
+let selectedMood = "😊";
 let authMode = "login";
-let busy = false;
-let toastTimer = null;
 
-function toast(message){
- const el=$("#toast");
- el.textContent=message;
- el.classList.add("show");
- clearTimeout(toastTimer);
- toastTimer=setTimeout(()=>el.classList.remove("show"),3200);
+const BUCKET = "memory-files";
+
+function escapeHTML(value="") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[char]);
 }
 
-function status(el,message,type=""){
- el.textContent=message;
- el.className="status"+(type?" "+type:"");
+function status(element,message,isError=false) {
+  element.textContent = message;
+  element.style.color = isError ? "#d84c4c" : "#4263eb";
 }
 
-function escapeHTML(value){
- return String(value??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
- }[c]));
+function setAuthMode(mode) {
+  authMode = mode;
+  const register = mode === "register";
+  $("#authTitle").textContent = register ? "Создать аккаунт" : "Добро пожаловать";
+  $("#authDescription").textContent = register
+    ? "Зарегистрируйтесь, чтобы начать сохранять свои воспоминания."
+    : "Сохраняйте важные моменты своей жизни в одном месте.";
+  $("#authButton").textContent = register ? "Зарегистрироваться" : "Войти";
+  $("#switchText").textContent = register ? "Уже есть аккаунт?" : "Нет аккаунта?";
+  $("#switchAuth").textContent = register ? "Войти" : "Зарегистрироваться";
+  $("#authStatus").textContent = "";
 }
 
-function formatDate(value){
- const d=new Date(value);
- if(Number.isNaN(d.getTime()))return "";
- return d.toLocaleDateString("ru-RU",{
-  day:"numeric",
-  month:"long",
-  year:"numeric"
- });
-}
-
-function setBusy(value){
- busy=value;
- ["#authSubmit","#createFolderBtn","#saveBtn"].forEach(s=>{
-  const el=$(s);
-  if(el)el.disabled=value;
- });
-}
-
-function requireAuth(){
- if(!currentUser){
-  toast("Сначала войди в аккаунт.");
-  openAuth("login");
-  return false;
- }
- return true;
-}
-
-/* ЦВЕТА ПАПОК */
-function initPalette(){
- $("#palette").innerHTML=colors.map((c,i)=>`
-  <button type="button"
-   class="color ${i===0?"active":""}"
-   style="background:${c}"
-   data-color="${c}"
-   aria-label="Цвет ${i+1}">
-  </button>
- `).join("");
-}
-
-$("#palette").addEventListener("click",e=>{
- const b=e.target.closest("[data-color]");
- if(!b)return;
-
- selectedColor=b.dataset.color;
-
- document.querySelectorAll(".color").forEach(x=>{
-  x.classList.toggle("active",x===b);
- });
+$("#switchAuth").addEventListener("click", () => {
+  setAuthMode(authMode === "login" ? "register" : "login");
 });
 
-/* ИНТЕРФЕЙС */
-function updateInterface(){
- const signedIn=!!currentUser;
-
- $("#signedOutNotice").hidden=signedIn;
- $("#privateStudio").hidden=!signedIn;
- $("#archiveSignedOut").hidden=signedIn;
- $("#archiveGrid").hidden=!signedIn;
-
- if(signedIn){
-  $("#userBox").innerHTML=`
-   <span class="user-email">${escapeHTML(currentUser.email)}</span>
-   <button class="btn small" onclick="logout()">Выйти</button>
-  `;
- }else{
-  $("#userBox").innerHTML=`
-   <button class="btn small" onclick="openAuth('login')">Войти</button>
-  `;
-
-  folders=[];
-  currentId=null;
-  currentFiles=[];
-
-  closeFolder();
-  renderFolders();
-  renderArchive();
- }
-}
-
-function goToWorkspace(){
- $("#studio").scrollIntoView({behavior:"smooth"});
- if(!currentUser)openAuth("login");
-}
-
-/* ОТОБРАЖЕНИЕ ПАПОК */
-function renderFolders(){
- const target=$("#folderList");
-
- $("#folderCount").textContent=
-  folders.length+" "+(folders.length===1?"папка":"папок");
-
- if(!folders.length){
-  target.innerHTML=`
-   <p style="font-size:12px;color:var(--muted)">
-    Папок пока нет. Создай свою первую папку!
-   </p>
-  `;
-  return;
- }
-
- target.innerHTML=folders.map(f=>`
-  <div class="folder-item"
-   data-id="${escapeHTML(f.id)}"
-   tabindex="0"
-   role="button">
-
-   <div class="folder-icon"
-    style="--folder-color:${escapeHTML(f.color||colors[0])}">
-   </div>
-
-   <strong>${escapeHTML(f.name)}</strong>
-   <small>${formatDate(f.created_at)}</small>
-  </div>
- `).join("");
-}
-
-/* ДНЕВНИК */
-function renderArchive(){
- const target=$("#archiveGrid");
-
- if(!folders.length){
-  target.innerHTML=`
-   <p class="empty">
-    Твой дневник пока пуст. Создай первую папку!
-   </p>
-  `;
-  return;
- }
-
- target.innerHTML=folders.map(f=>{
-  const files=Array.isArray(f.files)?f.files:[];
-  const photo=files.find(x=>(x.type||"").startsWith("image/"));
-
-  return `
-   <article class="day-card"
-    data-memory="${escapeHTML(f.id)}"
-    tabindex="0"
-    role="button">
-
-    <div class="day-cover"
-     data-cover="${escapeHTML(f.id)}"
-     style="--cover-color:${escapeHTML(f.color||colors[0])}">
-     ${photo?"":"✦"}
-    </div>
-
-    <div class="day-info">
-     <h3>${escapeHTML(f.name)}</h3>
-     <small>${formatDate(f.created_at)}</small>
-     <p>${escapeHTML((f.description||"Пока нет описания.").slice(0,110))}</p>
-    </div>
-   </article>
-  `;
- }).join("");
-
- loadArchiveCovers();
-}
-
-async function getFileUrl(path){
- const {data,error}=await db.storage
-  .from(BUCKET)
-  .createSignedUrl(path,3600);
-
- if(error){
-  console.error(error);
-  return "";
- }
-
- return data?.signedUrl||"";
-}
-
-async function loadArchiveCovers(){
- for(const f of folders){
-  const photo=(Array.isArray(f.files)?f.files:[])
-   .find(x=>(x.type||"").startsWith("image/"));
-
-  if(!photo)continue;
-
-  const url=await getFileUrl(photo.path);
-
-  const cover=document.querySelector(
-   `[data-cover="${CSS.escape(f.id)}"]`
-  );
-
-  if(cover&&url){
-   cover.style.backgroundImage=`url("${url}")`;
-   cover.textContent="";
-  }
- }
-}
-
-/* ЗАГРУЗКА ПАПОК ИЗ БАЗЫ */
-async function refreshFolders(){
- if(!currentUser)return;
-
- const {data,error}=await db.from("memories")
-  .select("*")
-  .eq("user_id",currentUser.id)
-  .order("created_at",{ascending:false});
-
- if(error){
-  console.error(error);
-  toast("Ошибка загрузки папок: "+error.message);
-  return;
- }
-
- folders=data||[];
-
- renderFolders();
- renderArchive();
-
- if(currentId&&!folders.some(f=>f.id===currentId)){
-  closeFolder();
- }
-}
-
-/* ОТКРЫТИЕ ПАПКИ В ОКНЕ */
-function openFolder(id){
- if(!currentUser)return;
-
- const f=folders.find(x=>x.id===id);
- if(!f)return;
-
- currentId=id;
-
- $("#editorTitle").textContent=f.name;
- $("#editorDate").textContent=formatDate(f.created_at);
-
- $("#editorIcon").style.setProperty(
-  "--folder-color",
-  f.color||colors[0]
- );
-
- $("#dayText").value=f.description||"";
- $("#songUrl").value=f.song_url||"";
- $("#songInfo").value=f.song_info||"";
- $("#mood").value=f.mood||"";
- $("#weather").value=f.weather||"";
-
- currentFiles=(Array.isArray(f.files)?f.files:[])
-  .map(x=>({...x,existing:true}));
-
- renderFiles();
- status($("#saveStatus"),"");
-
- $("#folderModal").classList.add("open");
- document.body.style.overflow="hidden";
-}
-
-function closeFolder(){
- $("#folderModal").classList.remove("open");
- document.body.style.overflow="";
-}
-
-/* СОЗДАНИЕ ПАПКИ */
-async function createFolder(event){
- event.preventDefault();
-
- if(!requireAuth()||busy)return;
-
- const name=$("#folderName").value.trim();
-
- if(!name){
-  toast("Введи название папки.");
-  return;
- }
-
- setBusy(true);
- $("#createFolderBtn").textContent="Создание…";
-
- const {data,error}=await db.from("memories")
-  .insert({
-   user_id:currentUser.id,
-   name,
-   color:selectedColor,
-   description:"",
-   files:[]
-  })
-  .select()
-  .single();
-
- setBusy(false);
- $("#createFolderBtn").textContent="＋ Создать папку";
-
- if(error){
-  console.error(error);
-  toast("Не удалось создать папку: "+error.message);
-  return;
- }
-
- folders.unshift(data);
-
- $("#folderName").value="";
- selectedColor=colors[0];
-
- document.querySelectorAll(".color").forEach((el,i)=>{
-  el.classList.toggle("active",i===0);
- });
-
- renderFolders();
- renderArchive();
-
- openFolder(data.id);
-
- toast("Папка успешно создана!");
-}
-
-$("#folderForm").addEventListener("submit",createFolder);
-
-/* КЛИК ПО ПАПКЕ */
-$("#folderList").addEventListener("click",e=>{
- const item=e.target.closest("[data-id]");
- if(item)openFolder(item.dataset.id);
-});
-
-$("#folderList").addEventListener("keydown",e=>{
- if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-id]")){
-  e.preventDefault();
-  openFolder(e.target.dataset.id);
- }
-});
-
-/* КЛИК ПО КАРТОЧКЕ ДНЕВНИКА */
-$("#archiveGrid").addEventListener("click",e=>{
- const card=e.target.closest("[data-memory]");
- if(card)openFolder(card.dataset.memory);
-});
-
-$("#archiveGrid").addEventListener("keydown",e=>{
- if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-memory]")){
-  e.preventDefault();
-  openFolder(e.target.dataset.memory);
- }
-});
-
-/* ФАЙЛЫ */
-$("#chooseFiles").addEventListener("click",()=>{
- if(requireAuth())$("#fileInput").click();
-});
-
-$("#fileInput").addEventListener("change",e=>{
- addFiles(e.target.files);
-});
-
-function addFiles(fileList){
- if(!requireAuth())return;
-
- for(const file of Array.from(fileList||[])){
-  if(file.size>MAX_FILE_SIZE){
-   toast(file.name+": файл больше 25 МБ.");
-   continue;
-  }
-
-  if(!/^(image|video|audio)\//.test(file.type)){
-   toast(file.name+": неподдерживаемый формат.");
-   continue;
-  }
-
-  currentFiles.push({
-   name:file.name,
-   type:file.type,
-   file,
-   existing:false
-  });
- }
-
- renderFiles();
- $("#fileInput").value="";
-}
-
-function renderFiles(){
- $("#fileList").innerHTML=currentFiles.map((f,i)=>`
-  <div class="file-item">
-   ${escapeHTML(f.name)}
-   <button type="button"
-    data-remove="${i}"
-    aria-label="Удалить файл">×</button>
-  </div>
- `).join("");
-}
-
-$("#fileList").addEventListener("click",e=>{
- const b=e.target.closest("[data-remove]");
- if(!b)return;
-
- currentFiles.splice(Number(b.dataset.remove),1);
- renderFiles();
-});
-
-/* ПЕРЕТАСКИВАНИЕ ФАЙЛОВ */
-const drop=$("#drop");
-
-drop.addEventListener("dragover",e=>{
- e.preventDefault();
- drop.style.background="#edf1ff";
-});
-
-drop.addEventListener("dragleave",()=>{
- drop.style.background="";
-});
-
-drop.addEventListener("drop",e=>{
- e.preventDefault();
- drop.style.background="";
- addFiles(e.dataTransfer.files);
-});
-
-function safeFileName(name){
- return String(name).normalize("NFKD")
-  .replace(/[^a-zA-Z0-9._-]/g,"_")
-  .slice(-90)||"file";
-}
-
-/* ЗАГРУЗКА НОВЫХ ФАЙЛОВ В SUPABASE */
-async function uploadNewFiles(){
- const uploaded=[];
- const newlyUploadedPaths=[];
-
- try{
-  for(const item of currentFiles){
-   if(item.existing){
-    uploaded.push({
-     name:item.name,
-     type:item.type,
-     path:item.path
-    });
-    continue;
-   }
-
-   const path=
-    `${currentUser.id}/${currentId}/${crypto.randomUUID()}-${safeFileName(item.name)}`;
-
-   const {error}=await db.storage.from(BUCKET).upload(
-    path,
-    item.file,
-    {
-     contentType:item.type,
-     upsert:false
+$("#authForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const email = $("#authEmail").value.trim();
+  const password = $("#authPassword").value;
+  const button = $("#authButton");
+  button.disabled = true;
+  status($("#authStatus"),"Подождите...");
+
+  try {
+    let result;
+    if (authMode === "register") {
+      result = await supabaseClient.auth.signUp({email,password});
+    } else {
+      result = await supabaseClient.auth.signInWithPassword({email,password});
     }
-   );
+    if (result.error) throw result.error;
 
-   if(error)throw error;
-
-   newlyUploadedPaths.push(path);
-
-   uploaded.push({
-    name:item.name,
-    type:item.type,
-    path
-   });
+    if (authMode === "register" && !result.data.session) {
+      status($("#authStatus"),"Аккаунт создан! Проверьте почту и подтвердите регистрацию.");
+    } else {
+      status($("#authStatus"),"Успешно!");
+    }
+  } catch(error) {
+    status($("#authStatus"),error.message || "Ошибка авторизации",true);
+  } finally {
+    button.disabled = false;
   }
+});
 
-  return uploaded;
+function showApp(user) {
+  currentUser = user;
+  $("#authScreen").classList.add("hidden");
+  $("#appScreen").classList.remove("hidden");
+  $("#userEmail").textContent = user.email || "";
+  loadMemories();
+  loadSharedFolders();
+  handlePendingSharedInvite();
+}
 
- }catch(error){
-  if(newlyUploadedPaths.length){
-   await db.storage.from(BUCKET).remove(newlyUploadedPaths);
+function showAuth() {
+  closeSharedWorkspace();
+  currentUser = null;
+  folders = [];
+  sharedMemories = [];
+  myShares = [];
+  currentId = null;
+  currentFiles = [];
+  $("#appScreen").classList.add("hidden");
+  $("#authScreen").classList.remove("hidden");
+  resetForm();
+}
+
+$("#logoutButton").addEventListener("click", async () => {
+  const {error} = await supabaseClient.auth.signOut();
+  if (error) alert(error.message);
+});
+
+supabaseClient.auth.onAuthStateChange((event,session) => {
+  if (session?.user) {
+    showApp(session.user);
+  } else {
+    showAuth();
   }
+});
 
-  throw error;
- }
-}
+async function loadMemories() {
+  if (!currentUser) return;
 
-/* СОХРАНЕНИЕ ВОСПОМИНАНИЯ */
-async function saveCurrent(){
- if(!requireAuth()||busy)return;
+  status($("#memoryStatus"),"Загружаем воспоминания...");
 
- const f=folders.find(x=>x.id===currentId);
- if(!f)return;
+  const {data,error} = await supabaseClient
+    .from("memories")
+    .select("*")
+    .order("created_at",{ascending:false});
 
- const songUrl=$("#songUrl").value.trim();
-
- if(songUrl){
-  try{
-   const u=new URL(songUrl);
-   if(!["http:","https:"].includes(u.protocol))throw new Error();
-  }catch{
-   toast("Проверь ссылку на песню.");
-   return;
-  }
- }
-
- setBusy(true);
- $("#saveBtn").textContent="Сохранение…";
- status($("#saveStatus"),"Сохраняем файлы и воспоминание…");
-
- let files;
-
- try{
-  files=await uploadNewFiles();
- }catch(error){
-  console.error(error);
-
-  setBusy(false);
-  $("#saveBtn").textContent="Сохранить воспоминание";
-
-  status(
-   $("#saveStatus"),
-   "Ошибка загрузки: "+error.message,
-   "error"
-  );
-
-  toast("Не удалось загрузить файлы.");
-  return;
- }
-
- const updates={
-  description:$("#dayText").value.trim(),
-  song_url:songUrl||null,
-  song_info:$("#songInfo").value.trim()||null,
-  mood:$("#mood").value||null,
-  weather:$("#weather").value||null,
-  files
- };
-
- const {data,error}=await db.from("memories")
-  .update(updates)
-  .eq("id",currentId)
-  .eq("user_id",currentUser.id)
-  .select()
-  .single();
-
- setBusy(false);
- $("#saveBtn").textContent="Сохранить воспоминание";
-
- if(error){
-  console.error(error);
-
-  status(
-   $("#saveStatus"),
-   "Ошибка сохранения: "+error.message,
-   "error"
-  );
-
-  toast("Не удалось сохранить воспоминание.");
-  return;
- }
-
- const index=folders.findIndex(x=>x.id===currentId);
-
- if(index!==-1){
-  folders[index]=data;
- }
-
- currentFiles=(data.files||[])
-  .map(x=>({...x,existing:true}));
-
- /* ОЧИСТКА ПОЛЕЙ ПОСЛЕ УСПЕШНОГО СОХРАНЕНИЯ */
- $("#dayText").value="";
- $("#songUrl").value="";
- $("#songInfo").value="";
- $("#mood").value="";
- $("#weather").value="";
-
- renderFiles();
- renderFolders();
- renderArchive();
-
- status(
-  $("#saveStatus"),
-  "Воспоминание успешно сохранено в облаке.",
-  "success"
- );
-
- toast("Сохранено! Поля очищены.");
-}
-
-/* УДАЛЕНИЕ ПАПКИ */
-async function deleteCurrent(){
- if(!requireAuth()||!currentId||busy)return;
-
- if(!confirm("Удалить эту папку и все её файлы?"))return;
-
- const f=folders.find(x=>x.id===currentId);
- if(!f)return;
-
- setBusy(true);
-
- const paths=(Array.isArray(f.files)?f.files:[])
-  .map(x=>x.path)
-  .filter(Boolean);
-
- if(paths.length){
-  const {error:storageError}=await db.storage
-   .from(BUCKET)
-   .remove(paths);
-
-  if(storageError){
-   setBusy(false);
-   toast("Ошибка удаления файлов: "+storageError.message);
-   return;
-  }
- }
-
- const {error}=await db.from("memories")
-  .delete()
-  .eq("id",currentId)
-  .eq("user_id",currentUser.id);
-
- setBusy(false);
-
- if(error){
-  toast("Не удалось удалить папку: "+error.message);
-  return;
- }
-
- folders=folders.filter(x=>x.id!==currentId);
-
- closeFolder();
- currentId=null;
- currentFiles=[];
-
- renderFolders();
- renderArchive();
-
- toast("Папка удалена.");
-}
-
-/* АВТОРИЗАЦИЯ */
-function openAuth(mode="login"){
- switchAuth(mode);
- $("#authModal").classList.add("open");
-}
-
-function closeModal(id){
- $("#"+id).classList.remove("open");
-}
-
-function switchAuth(mode){
- authMode=mode;
-
- $("#loginTab").classList.toggle("active",mode==="login");
- $("#registerTab").classList.toggle("active",mode==="register");
-
- $("#authTitle").textContent=
-  mode==="login"?"Вход в аккаунт":"Создание аккаунта";
-
- $("#nameField").hidden=mode!=="register";
- $("#authName").required=mode==="register";
-
- $("#authPassword").autocomplete=
-  mode==="login"?"current-password":"new-password";
-
- $("#authSubmit").textContent=
-  mode==="login"?"Войти":"Зарегистрироваться";
-
- status($("#authMessage"),"");
-}
-
-$("#authForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- if(!db||busy)return;
-
- const email=$("#authEmail").value.trim().toLowerCase();
- const password=$("#authPassword").value;
-
- setBusy(true);
-
- status(
-  $("#authMessage"),
-  authMode==="login"?"Выполняется вход…":"Создаём аккаунт…"
- );
-
- let result;
-
- try{
-  if(authMode==="register"){
-   const name=$("#authName").value.trim();
-
-   if(!name){
-    setBusy(false);
-    status($("#authMessage"),"Введи имя.","error");
+  if (error) {
+    status($("#memoryStatus"),error.message,true);
     return;
-   }
+  }
 
-   result=await db.auth.signUp({
-    email,
-    password,
-    options:{
-     data:{display_name:name}
+  const allVisible = data || [];
+  folders = allVisible.filter(memory => memory.user_id === currentUser.id);
+
+  const {data:receivedShares,error:receivedError} = await supabaseClient
+    .from("memory_shares")
+    .select("memory_id,owner_id,created_at")
+    .eq("shared_with",currentUser.id);
+
+  if (receivedError) {
+    status($("#memoryStatus"),receivedError.message,true);
+    return;
+  }
+
+  const sharedIds = (receivedShares || []).map(item => item.memory_id);
+  if (sharedIds.length) {
+    const {data:sharedData,error:sharedError} = await supabaseClient
+      .from("memories")
+      .select("*")
+      .in("id",sharedIds);
+    if (sharedError) {
+      status($("#memoryStatus"),sharedError.message,true);
+      return;
     }
-   });
-
-  }else{
-   result=await db.auth.signInWithPassword({
-    email,
-    password
-   });
+    sharedMemories = (sharedData || []).map(memory => ({...memory,isShared:true}));
+  } else {
+    sharedMemories = [];
   }
 
- }catch(error){
-  setBusy(false);
-  status($("#authMessage"),error.message,"error");
-  return;
- }
+  renderFolders();
+  renderSharedArchive();
 
- setBusy(false);
-
- if(result.error){
-  status($("#authMessage"),result.error.message,"error");
-  return;
- }
-
- if(authMode==="register"&&!result.data.session){
-  status(
-   $("#authMessage"),
-   "Аккаунт создан. Подтверди почту, затем войди.",
-   "success"
-  );
-  return;
- }
-
- $("#authModal").classList.remove("open");
-
- toast(authMode==="login"?"Ты вошёл в аккаунт.":"Аккаунт создан.");
-});
-
-/* ВЫХОД */
-async function logout(){
- if(!db)return;
-
- const {error}=await db.auth.signOut();
-
- if(error){
-  toast("Не удалось выйти: "+error.message);
-  return;
- }
-
- currentUser=null;
- folders=[];
- currentId=null;
- currentFiles=[];
-
- updateInterface();
-
- toast("Ты вышел из аккаунта.");
+  if (currentId) {
+    const selected = folders.find(item => item.id === currentId);
+    if (selected) openFolder(selected.id);
+    else resetForm();
+  }
+  status($("#memoryStatus"),"Воспоминания загружены.");
 }
 
-/* ЗАКРЫТИЕ ОКОН */
-document.querySelectorAll(".modal").forEach(m=>{
- m.addEventListener("click",e=>{
-  if(e.target===m){
-   m.classList.remove("open");
-   document.body.style.overflow="";
+function renderFolders() {
+  const grid = $("#myMemoryGrid");
+  if (!folders.length) {
+    grid.innerHTML = '<div class="empty">Пока нет воспоминаний. Создайте первое!</div>';
+    return;
   }
- });
+
+  grid.innerHTML = folders.map(memory => `
+    <article class="memory-card" data-memory="${escapeHTML(memory.id)}">
+      <div class="memory-top">
+        <span class="memory-dot" style="background:${escapeHTML(memory.color || "#4263eb")}"></span>
+        <span class="pill">${escapeHTML(memory.mood || "✦")}</span>
+      </div>
+      <h3>${escapeHTML(memory.name)}</h3>
+      <p>${escapeHTML((memory.description || "Без описания").slice(0,110))}</p>
+      <div class="memory-date">${new Date(memory.created_at).toLocaleDateString("ru-RU")}</div>
+    </article>
+  `).join("");
+}
+
+function renderSharedArchive() {
+  const grid = $("#sharedArchiveGrid");
+  if (!sharedMemories.length) {
+    grid.innerHTML = '<div class="empty">Пока с вами никто не поделился воспоминаниями.</div>';
+    return;
+  }
+
+  grid.innerHTML = sharedMemories.map(memory => `
+    <article class="memory-card" data-shared-memory="${escapeHTML(memory.id)}">
+      <div class="memory-top">
+        <span class="memory-dot" style="background:${escapeHTML(memory.color || "#4263eb")}"></span>
+        <span class="pill">Доступно вам</span>
+      </div>
+      <h3>${escapeHTML(memory.name)}</h3>
+      <p>${escapeHTML((memory.description || "Без описания").slice(0,110))}</p>
+      <div class="memory-date">${new Date(memory.created_at).toLocaleDateString("ru-RU")}</div>
+      <span class="shared-label">Только просмотр</span>
+    </article>
+  `).join("");
+}
+
+$("#myMemoryGrid").addEventListener("click",event => {
+  const card = event.target.closest("[data-memory]");
+  if (card) openFolder(card.dataset.memory);
 });
 
-document.addEventListener("keydown",e=>{
- if(e.key==="Escape"){
-  document.querySelectorAll(".modal.open").forEach(m=>{
-   m.classList.remove("open");
+$("#sharedArchiveGrid").addEventListener("click",event => {
+  const card = event.target.closest("[data-shared-memory]");
+  if (!card) return;
+  const memory = sharedMemories.find(item => item.id === card.dataset.sharedMemory);
+  if (memory) showMemory(memory);
+});
+
+function openFolder(id) {
+  const memory = folders.find(item => item.id === id);
+  if (!memory) return;
+
+  currentId = id;
+  currentFiles = Array.isArray(memory.files) ? memory.files : [];
+  $("#memoryName").value = memory.name || "";
+  $("#memoryDescription").value = memory.description || "";
+  $("#songUrl").value = memory.song_url || "";
+  $("#songInfo").value = memory.song_info || "";
+  selectedColor = memory.color || "#4263eb";
+  selectedMood = memory.mood || "😊";
+
+  updateColorSelection();
+  updateMoodSelection();
+  renderExistingFiles();
+  $("#deleteButton").disabled = false;
+  $("#saveButton").textContent = "Сохранить изменения";
+  $("#shareEmail").value = "";
+  $("#shareStatus").textContent = "";
+  loadMyShares();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function resetForm() {
+  currentId = null;
+  currentFiles = [];
+  $("#memoryForm").reset();
+  $("#selectedFiles").textContent = "Файлы пока не выбраны.";
+  $("#existingFiles").innerHTML = "";
+  $("#deleteButton").disabled = true;
+  $("#saveButton").textContent = "Сохранить воспоминание";
+  selectedColor = "#4263eb";
+  selectedMood = "😊";
+  updateColorSelection();
+  updateMoodSelection();
+  $("#shareList").innerHTML = "";
+  $("#shareStatus").textContent = "";
+}
+
+$("#newButton").addEventListener("click",resetForm);
+
+$("#colors").addEventListener("click",event => {
+  const button = event.target.closest("[data-color]");
+  if (!button) return;
+  selectedColor = button.dataset.color;
+  updateColorSelection();
+});
+
+function updateColorSelection() {
+  document.querySelectorAll(".color").forEach(button => {
+    button.classList.toggle("active",button.dataset.color === selectedColor);
   });
-  document.body.style.overflow="";
- }
-});
-
-/* ЗАПУСК */
-async function init(){
- initPalette();
-
- if(!window.supabase?.createClient){
-  toast("Не удалось загрузить Supabase. Проверь интернет.");
-  return;
- }
-
- db=window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
- );
-
- const {data,error}=await db.auth.getSession();
-
- if(error)console.error(error);
-
- currentUser=data.session?.user||null;
-
- updateInterface();
-
- if(currentUser){
-  await refreshFolders();
- }
-
- db.auth.onAuthStateChange((_event,session)=>{
-  currentUser=session?.user||null;
-  currentId=null;
-  currentFiles=[];
-
-  updateInterface();
-
-  if(currentUser){
-   setTimeout(()=>refreshFolders(),0);
-  }
- });
 }
 
-init();
-</script>
+$("#moodRow").addEventListener("click",event => {
+  const button = event.target.closest("[data-mood]");
+  if (!button) return;
+  selectedMood = button.dataset.mood;
+  updateMoodSelection();
+});
 
+function updateMoodSelection() {
+  document.querySelectorAll(".mood").forEach(button => {
+    button.classList.toggle("active",button.dataset.mood === selectedMood);
+  });
+}
+
+$("#memoryFiles").addEventListener("change",() => {
+  const files = [...$("#memoryFiles").files];
+  $("#selectedFiles").textContent = files.length
+    ? "Выбрано файлов: " + files.length
+    : "Файлы пока не выбраны.";
+});
+
+function renderExistingFiles() {
+  $("#existingFiles").innerHTML = currentFiles.map((file,index) => `
+    <div class="file-item">
+      ${escapeHTML(file.name || "Файл")}
+      <button type="button" class="btn danger" style="padding:5px 8px;float:right"
+        data-remove-file="${index}">Удалить</button>
+    </div>
+  `).join("");
+}
+
+$("#existingFiles").addEventListener("click",event => {
+  const button = event.target.closest("[data-remove-file]");
+  if (!button) return;
+  currentFiles.splice(Number(button.dataset.removeFile),1);
+  renderExistingFiles();
+});
+
+async function uploadFiles(files,memoryId) {
+  const uploaded = [];
+
+  for (const file of files) {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path = `${currentUser.id}/${memoryId}/${crypto.randomUUID()}-${safeName}`;
+
+    const {error} = await supabaseClient.storage
+      .from(BUCKET)
+      .upload(path,file,{upsert:false,contentType:file.type});
+
+    if (error) throw error;
+
+    uploaded.push({
+      name:file.name,
+      path,
+      type:file.type,
+      size:file.size
+    });
+  }
+  return uploaded;
+}
+
+$("#memoryForm").addEventListener("submit",async event => {
+  event.preventDefault();
+  if (!currentUser) return;
+
+  const button = $("#saveButton");
+  button.disabled = true;
+  status($("#memoryStatus"),"Сохраняем...");
+
+  let uploadedPaths = [];
+  let createdId = currentId;
+
+  try {
+    const payload = {
+      user_id:currentUser.id,
+      name:$("#memoryName").value.trim(),
+      description:$("#memoryDescription").value.trim(),
+      color:selectedColor,
+      mood:selectedMood,
+      song_url:$("#songUrl").value.trim(),
+      song_info:$("#songInfo").value.trim(),
+      files:currentFiles
+    };
+
+    if (!payload.name) throw new Error("Введите название воспоминания.");
+
+    if (currentId) {
+      const {error} = await supabaseClient.from("memories")
+        .update(payload)
+        .eq("id",currentId)
+        .eq("user_id",currentUser.id);
+      if (error) throw error;
+    } else {
+      const {data,error} = await supabaseClient.from("memories")
+        .insert(payload)
+        .select()
+        .single();
+      if (error) throw error;
+      createdId = data.id;
+    }
+
+    const newFiles = [...$("#memoryFiles").files];
+    if (newFiles.length) {
+      const uploaded = await uploadFiles(newFiles,createdId);
+      uploadedPaths = uploaded.map(file => file.path);
+
+      const updatedFiles = [...currentFiles,...uploaded];
+      const {error} = await supabaseClient.from("memories")
+        .update({files:updatedFiles})
+        .eq("id",createdId)
+        .eq("user_id",currentUser.id);
+
+      if (error) {
+        await supabaseClient.storage.from(BUCKET).remove(uploadedPaths);
+        throw error;
+      }
+      currentFiles = updatedFiles;
+    }
+
+    currentId = createdId;
+    $("#memoryFiles").value = "";
+    $("#selectedFiles").textContent = "Файлы загружены.";
+    await loadMemories();
+    openFolder(createdId);
+    status($("#memoryStatus"),"Воспоминание успешно сохранено!");
+  } catch(error) {
+    status($("#memoryStatus"),error.message || "Не удалось сохранить воспоминание.",true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("#deleteButton").addEventListener("click",async () => {
+  if (!currentId || !confirm("Удалить это воспоминание?")) return;
+
+  status($("#memoryStatus"),"Удаляем...");
+  $("#deleteButton").disabled = true;
+
+  try {
+    const memory = folders.find(item => item.id === currentId);
+    const paths = (memory?.files || []).map(file => file.path).filter(Boolean);
+
+    const {error} = await supabaseClient.from("memories")
+      .delete()
+      .eq("id",currentId)
+      .eq("user_id",currentUser.id);
+
+    if (error) throw error;
+
+    if (paths.length) {
+      await supabaseClient.storage.from(BUCKET).remove(paths);
+    }
+
+    resetForm();
+    await loadMemories();
+    status($("#memoryStatus"),"Воспоминание удалено.");
+  } catch(error) {
+    status($("#memoryStatus"),error.message,true);
+    $("#deleteButton").disabled = false;
+  }
+});
+
+async function getFileUrl(path) {
+  const {data,error} = await supabaseClient.storage
+    .from(BUCKET)
+    .createSignedUrl(path,3600);
+
+  if (error) throw error;
+  return data.signedUrl;
+}
+
+async function showMemory(memory) {
+  $("#viewTitle").textContent = memory.name || "Воспоминание";
+  $("#viewMeta").textContent =
+    `${memory.mood || ""} · ${new Date(memory.created_at).toLocaleDateString("ru-RU")}`;
+  $("#viewDescription").textContent = memory.description || "";
+  $("#viewSong").innerHTML = memory.song_url
+    ? `<p class="notice">🎵 ${escapeHTML(memory.song_info || "Музыка")} · <a href="${escapeHTML(memory.song_url)}" target="_blank" rel="noopener">Открыть ссылку</a></p>`
+    : "";
+
+  $("#viewFiles").innerHTML = "";
+  $("#viewSharedNote").textContent = memory.isShared
+    ? "Это воспоминание доступно только для просмотра."
+    : "";
+
+  $("#viewModal").classList.remove("hidden");
+
+  for (const file of (memory.files || [])) {
+    if (!file.path) continue;
+
+    try {
+      const url = await getFileUrl(file.path);
+      const element = document.createElement(
+        file.type?.startsWith("video/") ? "video" : "img"
+      );
+      element.src = url;
+      if (element.tagName === "VIDEO") {
+        element.controls = true;
+        element.playsInline = true;
+      } else {
+        element.alt = file.name || "Фото воспоминания";
+      }
+      $("#viewFiles").appendChild(element);
+    } catch(error) {
+      const message = document.createElement("p");
+      message.className = "notice";
+      message.textContent = "Не удалось открыть файл: " + (file.name || "");
+      $("#viewFiles").appendChild(message);
+    }
+  }
+}
+
+$("#closeModal").addEventListener("click",() => {
+  $("#viewModal").classList.add("hidden");
+});
+
+$("#viewModal").addEventListener("click",event => {
+  if (event.target.id === "viewModal") {
+    $("#viewModal").classList.add("hidden");
+  }
+});
+
+async function shareCurrentMemory() {
+  if (!currentId) {
+    status($("#shareStatus"),"Сначала сохраните воспоминание.",true);
+    return;
+  }
+
+  const email = $("#shareEmail").value.trim().toLowerCase();
+  if (!email) {
+    status($("#shareStatus"),"Введите электронную почту.",true);
+    return;
+  }
+
+  const button = $("#shareButton");
+  button.disabled = true;
+  status($("#shareStatus"),"Отправляем приглашение...");
+
+  try {
+    const {error} = await supabaseClient.rpc("share_memory_with_email",{
+      p_memory_id:currentId,
+      p_email:email
+    });
+
+    if (error) throw error;
+
+    $("#shareEmail").value = "";
+    status($("#shareStatus"),"Доступ успешно предоставлен!");
+    await loadMyShares();
+  } catch(error) {
+    status($("#shareStatus"),error.message || "Не удалось поделиться воспоминанием.",true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$("#shareButton").addEventListener("click",shareCurrentMemory);
+
+async function loadMyShares() {
+  if (!currentId) return;
+
+  const {data,error} = await supabaseClient
+    .from("memory_shares")
+    .select("id,shared_email,shared_with,created_at")
+    .eq("memory_id",currentId)
+    .eq("owner_id",currentUser.id);
+
+  if (error) {
+    status($("#shareStatus"),error.message,true);
+    return;
+  }
+
+  myShares = data || [];
+  renderMyShares();
+}
+
+function renderMyShares() {
+  $("#shareList").innerHTML = myShares.length
+    ? myShares.map(share => `
+      <div class="share-item">
+        <span>${escapeHTML(share.shared_email || share.shared_with)}</span>
+        <button class="btn danger" style="padding:7px 9px"
+          data-revoke="${escapeHTML(share.id)}">Отозвать</button>
+      </div>
+    `).join("")
+    : '<p class="notice">Пока никто не имеет доступа.</p>';
+}
+
+$("#shareList").addEventListener("click",async event => {
+  const button = event.target.closest("[data-revoke]");
+  if (!button) return;
+
+  if (!confirm("Отозвать доступ у этого пользователя?")) return;
+
+  button.disabled = true;
+
+  try {
+    const {error} = await supabaseClient.rpc("revoke_memory_share",{
+      p_share_id:button.dataset.revoke
+    });
+    if (error) throw error;
+
+    status($("#shareStatus"),"Доступ отозван.");
+    await loadMyShares();
+  } catch(error) {
+    status($("#shareStatus"),error.message,true);
+    button.disabled = false;
+  }
+});
+  // ===== SHARED FOLDERS =====
+const SHARED_BUCKET = "shared-folder-files";
+let activeSharedFolder = null;
+let activeSharedParent = null;
+let sharedFolderItems = [];
+let sharedFolderMembers = [];
+
+function sharedStatus(message,isError=false) {
+  status($("#sharedWorkspaceStatus"),message,isError);
+}
+
+function extractInviteToken(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+
+  try {
+    const url = new URL(raw,window.location.href);
+    return url.searchParams.get("invite") || raw;
+  } catch (_) {
+    return raw;
+  }
+}
+
+async function loadSharedFolders() {
+  if (!currentUser) return;
+
+  const {data,error} = await supabaseClient
+    .from("shared_folders")
+    .select("id,name,owner_id,created_at")
+    .order("created_at",{ascending:false});
+
+  if (error) {
+    $("#sharedFolderList").innerHTML =
+      '<div class="empty">Не удалось загрузить общие папки.</div>';
+    status($("#sharedFolderStatus"),error.message,true);
+    return;
+  }
+
+  renderSharedFolderList(data || []);
+}
+
+function renderSharedFolderList(items) {
+  const list = $("#sharedFolderList");
+
+  if (!items.length) {
+    list.innerHTML = '<div class="empty">Общих папок пока нет.</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(folder => `
+    <div class="shared-folder-card">
+      <button type="button" data-open-shared-folder="${escapeHTML(folder.id)}">
+        📁 ${escapeHTML(folder.name)}
+        <small>${folder.owner_id === currentUser.id ? "Создатель" : "Участник"} · Открыть</small>
+      </button>
+    </div>
+  `).join("");
+}
+
+$("#sharedFolderList").addEventListener("click",event => {
+  const button = event.target.closest("[data-open-shared-folder]");
+  if (button) openSharedFolder(button.dataset.openSharedFolder);
+});
+
+$("#sharedFolderCreateForm").addEventListener("submit",async event => {
+  event.preventDefault();
+
+  const name = $("#sharedFolderName").value.trim();
+  if (!name) return;
+
+  const button = $("#createSharedFolderButton");
+  button.disabled = true;
+  status($("#sharedFolderStatus"),"Создаём общую папку...");
+
+  try {
+    const {data,error} = await supabaseClient.rpc(
+      "create_shared_folder",
+      {p_name:name}
+    );
+
+    if (error) throw error;
+
+    $("#sharedFolderName").value = "";
+    status($("#sharedFolderStatus"),"Общая папка создана!");
+    await loadSharedFolders();
+    await openSharedFolder(data);
+  } catch(error) {
+    status($("#sharedFolderStatus"),error.message || "Не удалось создать папку.",true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+async function openSharedFolder(folderId) {
+  activeSharedFolder = folderId;
+  activeSharedParent = null;
+
+  $("#sharedWorkspaceModal").classList.remove("hidden");
+  document.body.classList.add("modal-open");
+  $("#sharedWorkspace").classList.remove("hidden");
+  $("#sharedInviteControls").classList.remove("hidden");
+  $("#sharedInviteResult").classList.add("hidden");
+  $("#sharedInviteLink").value = "";
+
+  await refreshSharedWorkspace();
+}
+
+function closeSharedWorkspace() {
+  $("#sharedWorkspaceModal").classList.add("hidden");
+  document.body.classList.remove("modal-open");
+}
+
+$("#closeSharedWorkspaceButton").addEventListener("click",closeSharedWorkspace);
+
+$("#sharedWorkspaceModal").addEventListener("click",event => {
+  if (event.target === $("#sharedWorkspaceModal")) {
+    closeSharedWorkspace();
+  }
+});
+
+document.addEventListener("keydown",event => {
+  if (
+    event.key === "Escape" &&
+    !$("#sharedWorkspaceModal").classList.contains("hidden")
+  ) {
+    closeSharedWorkspace();
+  }
+});
+
+async function refreshSharedWorkspace() {
+  if (!activeSharedFolder || !currentUser) return;
+
+  sharedStatus("Загружаем общую папку...");
+
+  const [
+    {data:folder,error:folderError},
+    {data:members,error:membersError},
+    {data:items,error:itemsError}
+  ] = await Promise.all([
+    supabaseClient.from("shared_folders")
+      .select("id,name,owner_id")
+      .eq("id",activeSharedFolder)
+      .single(),
+
+    supabaseClient.from("shared_folder_members")
+      .select("user_id,role")
+      .eq("folder_id",activeSharedFolder),
+
+    supabaseClient.from("shared_folder_items")
+      .select("*")
+      .eq("folder_id",activeSharedFolder)
+      .order("created_at",{ascending:true})
+  ]);
+
+  if (folderError || membersError || itemsError) {
+    sharedStatus(
+      (folderError || membersError || itemsError).message,
+      true
+    );
+    return;
+  }
+
+  activeSharedFolder = folder.id;
+  sharedFolderMembers = members || [];
+  sharedFolderItems = items || [];
+
+  $("#sharedWorkspaceTitle").textContent = folder.name;
+  $("#sharedWorkspaceDescription").textContent =
+    "Все участники могут добавлять и удалять материалы. Удаление доступно всем и влияет на общую папку.";
+
+  $("#sharedMembers").innerHTML = sharedFolderMembers.map(member =>
+    `<span class="shared-member">
+      ${member.role === "owner" ? "Создатель" : "Участник"}
+      · ${escapeHTML(member.user_id.slice(0,8))}
+    </span>`
+  ).join("");
+
+  $("#sharedInviteControls").classList.toggle(
+    "hidden",
+   folder.owner_id !== currentUser.id
+  );
+
+  $("#sharedWorkspace").classList.remove("hidden");
+  renderSharedItems();
+  sharedStatus("");
+}
+
+function renderSharedItems() {
+  const parent = activeSharedParent;
+
+  const current = sharedFolderItems.filter(item =>
+    (item.parent_id || null) === (parent || null)
+  );
+
+  const crumbs = [];
+  let cursor = parent;
+
+  while (cursor) {
+    const item = sharedFolderItems.find(entry => entry.id === cursor);
+    if (!item) break;
+
+    crumbs.unshift(item.name);
+    cursor = item.parent_id;
+  }
+
+  $("#sharedBreadcrumb").textContent =
+    "Общая папка" + (crumbs.length ? " / " + crumbs.join(" / ") : "");
+
+  $("#sharedBackButton").disabled = !parent;
+
+  const target = $("#sharedItems");
+
+  if (!current.length) {
+    target.innerHTML =
+      '<div class="empty">Здесь пока пусто. Добавьте папку, заметку или файл!</div>';
+    return;
+  }
+
+  target.innerHTML = current.map(item => {
+    const icon =
+      item.item_type === "folder" ? "📁" :
+      item.item_type === "file" ? "📎" : "📝";
+
+    const meta =
+      item.item_type === "note"
+        ? (item.content || "").slice(0,100)
+        : item.item_type === "file"
+          ? `${item.mime_type || "Файл"} · ${formatFileSize(item.size_bytes)}`
+          : "Открыть вложенную папку";
+
+    return `<article class="shared-item">
+      <strong>${icon} ${escapeHTML(item.name)}</strong>
+      <small>${escapeHTML(meta)}</small>
+
+      <div class="actions">
+        ${item.item_type === "folder"
+          ? `<button class="btn secondary" data-enter-shared-folder="${escapeHTML(item.id)}">Открыть</button>`
+          : ""}
+
+        ${item.item_type === "file"
+          ? `<button class="btn secondary" data-download-shared-file="${escapeHTML(item.id)}">Открыть файл</button>`
+          : ""}
+
+        ${item.item_type === "note"
+          ? `<button class="btn secondary" data-view-shared-note="${escapeHTML(item.id)}">Читать</button>`
+          : ""}
+
+        <button class="btn danger" data-delete-shared-item="${escapeHTML(item.id)}">Удалить</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function formatFileSize(bytes) {
+  const n = Number(bytes || 0);
+
+  if (n < 1024) return `${n} Б`;
+  if (n < 1024*1024) return `${(n/1024).toFixed(1)} КБ`;
+
+  return `${(n/1024/1024).toFixed(1)} МБ`;
+}
+
+$("#sharedItems").addEventListener("click",async event => {
+  const enter = event.target.closest("[data-enter-shared-folder]");
+  const view = event.target.closest("[data-view-shared-note]");
+  const download = event.target.closest("[data-download-shared-file]");
+  const remove = event.target.closest("[data-delete-shared-item]");
+
+  if (enter) {
+    activeSharedParent = enter.dataset.enterSharedFolder;
+    renderSharedItems();
+    return;
+  }
+
+  if (view) {
+    const item = sharedFolderItems.find(
+      entry => entry.id === view.dataset.viewSharedNote
+    );
+
+    if (item) alert(`${item.name}\n\n${item.content || ""}`);
+    return;
+  }
+
+  if (download) {
+    const item = sharedFolderItems.find(
+      entry => entry.id === download.dataset.downloadSharedFile
+    );
+
+    if (!item?.storage_path) return;
+
+    try {
+      const {data,error} = await supabaseClient.storage
+        .from(SHARED_BUCKET)
+        .createSignedUrl(item.storage_path,3600);
+
+      if (error) throw error;
+
+      window.open(data.signedUrl,"_blank","noopener");
+    } catch(error) {
+      sharedStatus(error.message,true);
+    }
+
+    return;
+  }
+
+  if (remove) {
+    await deleteSharedItem(remove.dataset.deleteSharedItem);
+  }
+});
+
+$("#sharedBackButton").addEventListener("click",() => {
+  if (!activeSharedParent) return;
+
+  const parentItem = sharedFolderItems.find(
+    item => item.id === activeSharedParent
+  );
+
+  activeSharedParent = parentItem?.parent_id || null;
+  renderSharedItems();
+});
+
+$("#createNestedFolderButton").addEventListener("click",async () => {
+  const name = prompt("Название новой папки:");
+  if (!name?.trim()) return;
+
+  await createSharedItem({
+    item_type:"folder",
+    name:name.trim()
+  });
+});
+
+async function createSharedItem(values) {
+  if (!activeSharedFolder) return;
+
+  const payload = {
+    id:crypto.randomUUID(),
+    folder_id:activeSharedFolder,
+    parent_id:activeSharedParent,
+    created_by:currentUser.id,
+    ...values
+  };
+
+  const {error} = await supabaseClient
+    .from("shared_folder_items")
+    .insert(payload);
+
+  if (error) {
+    sharedStatus(error.message,true);
+    return;
+  }
+
+  await refreshSharedWorkspace();
+}
+
+$("#sharedNoteForm").addEventListener("submit",async event => {
+  event.preventDefault();
+
+  const name = $("#sharedNoteName").value.trim();
+  const content = $("#sharedNoteContent").value.trim();
+
+  if (!name) return;
+
+  await createSharedItem({
+    item_type:"note",
+    name,
+    content
+  });
+
+  $("#sharedNoteName").value = "";
+  $("#sharedNoteContent").value = "";
+});
+
+$("#uploadSharedFilesButton").addEventListener("click",async () => {
+  const files = [...$("#sharedUploadInput").files];
+
+  if (!activeSharedFolder || !files.length) {
+    sharedStatus("Сначала выберите файлы для загрузки.",true);
+    return;
+  }
+
+  const button = $("#uploadSharedFilesButton");
+  button.disabled = true;
+
+  try {
+    for (const file of files) {
+      const itemId = crypto.randomUUID();
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+      const path =
+        `${activeSharedFolder}/${itemId}/${crypto.randomUUID()}-${safeName}`;
+
+      const {error:uploadError} = await supabaseClient.storage
+        .from(SHARED_BUCKET)
+        .upload(path,file,{
+          upsert:false,
+          contentType:file.type
+        });
+
+      if (uploadError) throw uploadError;
+
+      const {error:rowError} = await supabaseClient
+        .from("shared_folder_items")
+        .insert({
+          id:itemId,
+          folder_id:activeSharedFolder,
+          parent_id:activeSharedParent,
+          item_type:"file",
+          name:file.name,
+          storage_path:path,
+          mime_type:file.type,
+          size_bytes:file.size,
+          created_by:currentUser.id
+        });
+
+      if (rowError) {
+        await supabaseClient.storage.from(SHARED_BUCKET).remove([path]);
+        throw rowError;
+      }
+    }
+
+    $("#sharedUploadInput").value = "";
+    sharedStatus("Файлы загружены для всех участников.");
+    await refreshSharedWorkspace();
+  } catch(error) {
+    sharedStatus(error.message || "Не удалось загрузить файлы.",true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+async function deleteSharedItem(itemId) {
+  const item = sharedFolderItems.find(entry => entry.id === itemId);
+
+  if (!item || !confirm(`Удалить «${item.name}» у всех участников?`)) {
+    return;
+  }
+
+  try {
+    const ids = new Set([item.id]);
+
+    if (item.item_type === "folder") {
+      let changed = true;
+
+      while (changed) {
+        changed = false;
+
+        for (const entry of sharedFolderItems) {
+          if (
+            entry.parent_id &&
+            ids.has(entry.parent_id) &&
+            !ids.has(entry.id)
+          ) {
+            ids.add(entry.id);
+            changed = true;
+          }
+        }
+      }
+    }
+
+    const paths = sharedFolderItems
+      .filter(entry => ids.has(entry.id) && entry.storage_path)
+      .map(entry => entry.storage_path);
+
+    if (paths.length) {
+      const {error:storageError} = await supabaseClient.storage
+        .from(SHARED_BUCKET)
+        .remove(paths);
+
+      if (storageError) throw storageError;
+    }
+
+    const {error} = await supabaseClient
+      .from("shared_folder_items")
+      .delete()
+      .eq("id",item.id)
+      .eq("folder_id",activeSharedFolder);
+
+    if (error) throw error;
+
+    await refreshSharedWorkspace();
+    sharedStatus("Материал удалён у всех участников.");
+  } catch(error) {
+    sharedStatus(error.message || "Не удалось удалить материал.",true);
+  }
+}
+
+$("#createSharedInviteButton").addEventListener("click",async () => {
+  if (!activeSharedFolder) return;
+
+  const button = $("#createSharedInviteButton");
+  button.disabled = true;
+
+  try {
+    const {data,error} = await supabaseClient.rpc(
+      "create_shared_folder_invite",
+      {p_folder_id:activeSharedFolder}
+    );
+
+    if (error) throw error;
+
+    const link =
+      `${window.location.origin}${window.location.pathname}?invite=${encodeURIComponent(data)}`;
+
+    $("#sharedInviteLink").value = link;
+    $("#sharedInviteResult").classList.remove("hidden");
+
+    sharedStatus("Ссылка создана. Она действует 7 дней; в папке максимум 4 участника.");
+  } catch(error) {
+    sharedStatus(error.message || "Не удалось создать приглашение.",true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("#copySharedInviteButton").addEventListener("click",async () => {
+  const value = $("#sharedInviteLink").value;
+
+  try {
+    await navigator.clipboard.writeText(value);
+    sharedStatus("Ссылка скопирована!");
+  } catch(_) {
+    $("#sharedInviteLink").select();
+    sharedStatus("Выделили ссылку — скопируйте её вручную.");
+  }
+});
+
+async function acceptSharedInvite(rawValue) {
+  const token = extractInviteToken(rawValue);
+
+  if (!token) {
+    status($("#sharedFolderStatus"),"Вставьте ссылку или код приглашения.",true);
+    return;
+  }
+
+  try {
+    status($("#sharedFolderStatus"),"Проверяем приглашение...");
+
+    const {data,error} = await supabaseClient.rpc(
+      "accept_shared_folder_invite",
+      {p_token:token}
+    );
+
+    if (error) throw error;
+
+    $("#sharedInviteInput").value = "";
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete("invite");
+    window.history.replaceState({},"",url);
+
+    await loadSharedFolders();
+    await openSharedFolder(data);
+
+    status($("#sharedFolderStatus"),"Вы присоединились к общей папке!");
+  } catch(error) {
+    status($("#sharedFolderStatus"),error.message || "Не удалось принять приглашение.",true);
+  }
+}
+
+$("#acceptSharedInviteButton").addEventListener("click",() => {
+  acceptSharedInvite($("#sharedInviteInput").value);
+});
+
+async function handlePendingSharedInvite() {
+  const token = new URL(window.location.href).searchParams.get("invite");
+
+  if (token && currentUser) {
+    await acceptSharedInvite(token);
+  }
+}
+
+// Initial session check
+(async () => {
+  const {data,error} = await supabaseClient.auth.getSession();
+
+  if (error) {
+    status($("#authStatus"),error.message,true);
+    return;
+  }
+
+  if (data.session?.user) {
+    showApp(data.session.user);
+  } else {
+    showAuth();
+  }
+})();
+</script>
 </body>
 </html>
+
+
+   
