@@ -9,6 +9,294 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+/* ===== GENESIS REDESIGN: WIDE & MODERN ===== */
+
+/* Более просторная ширина сайта */
+.container {
+  width: min(1360px, calc(100% - 64px));
+}
+
+/* Главный экран */
+.hero {
+  padding: 90px 0;
+}
+
+.hero-inner {
+  grid-template-columns: 1.15fr .85fr;
+  gap: 70px;
+}
+
+.hero-art {
+  max-width: 560px;
+  justify-self: end;
+  width: 100%;
+}
+
+.art-card {
+  height: 180px;
+  border-radius: 24px;
+}
+
+/* Пространство с папками */
+#studio {
+  padding: 75px 0;
+}
+
+#privateStudio > .card {
+  max-width: 1100px !important;
+  padding: 34px;
+  border-radius: 24px;
+}
+
+#privateStudio h3 {
+  font-size: 19px;
+}
+
+/* Папки — широкие, горизонтальные */
+.folder-list {
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  gap: 15px;
+}
+
+.folder-item {
+  min-height: 105px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  text-align: left;
+  border-radius: 17px;
+  transition: .25s ease;
+}
+
+.folder-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(45, 75, 150, .09);
+}
+
+.folder-icon {
+  width: 49px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  margin: 0;
+}
+
+.folder-item strong {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.folder-item small {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+/* Дневник */
+.archive {
+  padding: 75px 0;
+}
+
+.archive-grid {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+}
+
+.day-card {
+  border-radius: 19px;
+  transition: .25s ease;
+}
+
+.day-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(35, 55, 90, .1);
+}
+
+.day-cover {
+  height: 175px;
+}
+
+.day-info {
+  padding: 20px;
+}
+
+.day-info h3 {
+  font-size: 16px;
+}
+
+.day-info p {
+  line-height: 1.65;
+  font-size: 13px;
+}
+
+/* Большое окно папки */
+.modal {
+  padding: 28px;
+}
+
+.modal-box.wide {
+  width: min(1040px, 100%);
+  max-height: 92vh;
+  border-radius: 24px;
+  overflow-y: auto;
+  box-shadow: 0 30px 100px rgba(10, 20, 50, .25);
+}
+
+.folder-modal-header {
+  padding: 30px 75px 25px 32px;
+  gap: 20px;
+}
+
+.folder-modal-header .folder-icon {
+  width: 55px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.folder-modal-header h2 {
+  font-size: 25px;
+  letter-spacing: -.7px;
+}
+
+.folder-modal-body {
+  padding: 32px;
+}
+
+.folder-modal-body textarea {
+  min-height: 160px;
+  line-height: 1.7;
+}
+
+.drop {
+  padding: 30px;
+  border-radius: 16px;
+  transition: .2s;
+}
+
+.file-item {
+  border-radius: 11px;
+  padding: 11px 13px;
+}
+
+/* Поля и кнопки */
+input,
+textarea,
+select {
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.btn {
+  border-radius: 12px;
+}
+
+.card {
+  border-radius: 22px;
+}
+
+/* Планшеты */
+@media (max-width: 800px) {
+  .container {
+    width: min(100% - 36px, 700px);
+  }
+
+  .hero {
+    padding: 65px 0;
+  }
+
+  .hero-inner {
+    gap: 35px;
+  }
+
+  .hero-art {
+    justify-self: center;
+  }
+
+  .folder-list {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+/* Телефоны */
+@media (max-width: 550px) {
+  .container {
+    width: calc(100% - 28px);
+  }
+
+  .hero {
+    padding: 48px 0;
+  }
+
+  #studio,
+  .archive {
+    padding: 45px 0;
+  }
+
+  #privateStudio > .card {
+    padding: 20px;
+  }
+
+  .folder-list {
+    grid-template-columns: 1fr;
+  }
+
+  .folder-item {
+    min-height: 85px;
+    padding: 16px;
+  }
+
+  .archive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .day-cover {
+    height: 125px;
+  }
+
+  .day-info {
+    padding: 13px;
+  }
+
+  .day-info h3 {
+    font-size: 13px;
+  }
+
+  .day-info p {
+    font-size: 11px;
+  }
+
+  .modal {
+    padding: 8px;
+  }
+
+  .modal-box.wide {
+    width: 100%;
+    max-height: 96vh;
+    border-radius: 19px;
+  }
+
+  .folder-modal-header {
+    padding: 22px 60px 18px 18px;
+  }
+
+  .folder-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .folder-modal-body {
+    padding: 19px;
+  }
+}
+
+/* Маленькие экраны */
+@media (max-width: 350px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 <style>
 :root{
  --primary:#4263eb;
