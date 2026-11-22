@@ -9,140 +9,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --bg:#f3f5f7;
-  --surface:#fff;
-  --surface2:#e9eef2;
-  --primary:#29465f;
-  --primary2:#426d8e;
-  --text:#192b3b;
-  --muted:#73808d;
-  --border:#dce3e9;
-  --radius:12px;
+  .share-panel {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.6}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
-[hidden]{display:none!important}
-.topbar{height:76px;background:#ffffffed;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 6%;gap:35px;position:sticky;top:0;z-index:10}
-.logo{font-size:21px;font-weight:800;letter-spacing:-1px}
-.logo span{color:var(--primary2)}
-nav{display:flex;gap:28px}
-nav a{font-size:13px;color:var(--muted);font-weight:600}
-nav a:hover{color:var(--primary)}
-#userBox{margin-left:auto;font-size:13px;display:flex;align-items:center;gap:12px}
-.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:11px 19px;border-radius:8px;font-size:13px;font-weight:600;transition:.2s}
-.btn:hover{background:var(--surface2)}
-.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
-.btn.primary:hover{background:var(--primary2)}
-.btn.danger{color:#a34c4c}
-.btn.small{padding:8px 13px;font-size:12px}
-.btn.full{width:100%;margin-top:14px}
-section{padding:90px 6%}
-.container{max-width:1200px;margin:auto}
-.hero{background:#e8edf1;min-height:620px;display:flex;align-items:center}
-.hero-inner{max-width:1200px;margin:auto;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:65px;align-items:center}
-.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--primary2);font-weight:700}
-h1,h2,h3,h4,p{margin-top:0}
-h1{font-size:clamp(42px,7vw,82px);line-height:1.02;letter-spacing:-5px;margin:22px 0}
-h1 span{color:var(--primary2)}
-.hero-description{max-width:550px;color:#596a79;font-size:16px;line-height:1.9}
-.hero-buttons{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
-.hero-visual{display:grid;grid-template-columns:1fr 1fr;gap:15px;transform:rotate(-2deg)}
-.visual-card{height:210px;border-radius:8px;box-shadow:0 15px 35px #263d5020}
-.visual-card:nth-child(1){background:linear-gradient(145deg,#526e7e,#a7b9c3)}
-.visual-card:nth-child(2){background:linear-gradient(145deg,#263a4c,#718798);margin-top:35px}
-.visual-card:nth-child(3){background:linear-gradient(145deg,#8c9ba4,#d4d9db);margin-top:-25px}
-.visual-card:nth-child(4){background:linear-gradient(145deg,#526778,#c1cbd0)}
-.visual-caption{background:#fff;padding:15px;border-radius:7px;font-size:12px;font-weight:600;grid-column:1/3}
-.section-heading{margin-bottom:38px}
-.section-heading h2{font-size:clamp(32px,4vw,48px);letter-spacing:-2px;margin-bottom:8px}
-.section-heading p{color:var(--muted);font-size:14px}
-.studio{background:var(--bg)}
-.studio-grid{display:grid;grid-template-columns:310px 1fr;gap:24px;align-items:start}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:25px;box-shadow:0 5px 20px #1c344308}
-.card h3{font-size:19px;letter-spacing:-.5px;margin-bottom:17px}
-label{display:block;font-size:12px;font-weight:600;margin:15px 0 7px}
-input,textarea,select{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);font-size:13px;outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--primary2);box-shadow:0 0 0 3px #426d8e18}
-textarea{resize:vertical}
-.palette{display:flex;gap:10px;flex-wrap:wrap;margin:13px 0}
-.color{width:29px;height:29px;border-radius:50%;border:3px solid white;outline:1px solid var(--border)}
-.color.active{outline:2px solid var(--primary)}
-.folder-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.folder-item{border:1px solid var(--border);border-radius:8px;padding:13px 9px;background:#fff;text-align:center;cursor:pointer;transition:.2s}
-.folder-item:hover,.folder-item.active{border-color:var(--primary2);background:#edf2f6}
-.folder-icon{height:35px;width:48px;margin:0 auto 8px;border-radius:5px 5px 7px 7px;position:relative;background:var(--folder-color,#29465f)}
-.folder-icon:before{content:"";position:absolute;top:-5px;left:0;width:20px;height:8px;border-radius:4px 4px 0 0;background:inherit}
-.folder-item strong{display:block;font-size:11px;overflow-wrap:anywhere}
-.folder-item small{font-size:10px;color:var(--muted)}
-.empty{text-align:center;padding:75px 15px;color:var(--muted)}
-.empty-icon{font-size:42px;color:#9aaab7;margin-bottom:12px}
-.workspace-head{display:flex;align-items:center;gap:15px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:20px}
-.workspace-head h3{margin:0}
-.workspace-head p{margin:3px 0 0;font-size:12px;color:var(--muted)}
-.drop{border:1px dashed #9eafbd;border-radius:9px;background:#f7f9fa;text-align:center;padding:28px;margin-top:18px;color:var(--muted);font-size:13px}
-.drop.drag{background:#e7eef3;border-color:var(--primary)}
-.drop input{display:none}
-.file-list{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-.file-item{width:90px;height:90px;border-radius:7px;position:relative;overflow:hidden;background:#e8edf1}
-.file-item img,.file-item video{width:100%;height:100%;object-fit:cover}
-.file-item .remove{position:absolute;top:4px;right:4px;background:#fff;border:0;border-radius:50%;width:22px;height:22px}
-.file-audio{height:100%;display:flex;align-items:center;justify-content:center;font-size:12px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
-.archive{background:#e8edf1}
-.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:18px}
-.day-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s}
-.day-card:hover{transform:translateY(-4px);box-shadow:0 12px 25px #20384b16}
-.day-cover{height:155px;background:#526d82;display:flex;align-items:center;justify-content:center;color:white;font-size:38px;background-size:cover;background-position:center}
-.day-info{padding:17px}
-.day-info h3{font-size:17px;margin:0 0 5px}
-.day-info p{font-size:11px;color:var(--muted);margin:0}
-.day-preview{font-size:12px;margin-top:10px;color:#536474}
-footer{padding:28px 6%;text-align:center;background:#fff;color:var(--muted);font-size:11px;border-top:1px solid var(--border)}
-.modal{position:fixed;inset:0;background:#102234a8;z-index:20;display:none;align-items:center;justify-content:center;padding:20px}
-.modal.open{display:flex}
-.modal-box{background:white;border-radius:12px;width:100%;max-width:440px;padding:30px;max-height:90vh;overflow:auto;position:relative}
-.modal-box.wide{max-width:900px;padding:0}
-.close{position:absolute;right:15px;top:12px;border:0;background:#edf1f4;border-radius:6px;width:32px;height:32px;font-size:20px;z-index:2}
-.modal-box h2{font-size:26px;letter-spacing:-1px}
-.tabs{display:flex;gap:5px;background:#edf1f4;padding:4px;border-radius:7px;margin:20px 0}
-.tabs button{flex:1;border:0;background:transparent;padding:9px;border-radius:5px;font-size:12px;font-weight:600}
-.tabs button.active{background:#fff;color:var(--primary)}
-.memory-layout{display:grid;grid-template-columns:1.1fr .9fr;min-height:480px}
-.memory-photo{background:#344f64;min-height:350px;display:flex;align-items:center;justify-content:center;color:white;background-size:cover;background-position:center}
-.memory-content{padding:30px;background:#f5f7f8}
-.memory-content h2{font-size:30px}
-.memory-content p{font-size:13px;white-space:pre-wrap}
-.memory-meta{color:var(--muted);font-size:11px;margin-bottom:20px}
-.memory-files{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-.memory-files img,.memory-files video{max-width:100%;max-height:180px;border-radius:8px}
-.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#192f41;color:white;padding:12px 20px;border-radius:7px;font-size:12px;opacity:0;transition:.2s;z-index:40;pointer-events:none}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:800px){
- .hero-inner{grid-template-columns:1fr;gap:35px}
- .hero{padding-top:65px;padding-bottom:65px}
- .hero-visual{max-width:500px}
- .studio-grid{grid-template-columns:1fr}
- .topbar{padding:0 18px}
- nav{gap:12px}
- section{padding:65px 5%}
+.share-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
 }
-@media(max-width:520px){
- .topbar{height:65px;gap:12px}
- .logo{font-size:17px}
- nav{display:none}
- h1{letter-spacing:-3px}
- .row{grid-template-columns:1fr;gap:0}
- .memory-layout{grid-template-columns:1fr}
- .memory-photo{min-height:240px}
- .modal-box{padding:23px}
- .folder-list{grid-template-columns:repeat(2,1fr)}
- .hero-visual .visual-card{height:145px}
+.share-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  background: #f5f7f8;
+  border-radius: 7px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.shared-label {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 4px 8px;
+  background: #e9eef2;
+  color: var(--primary);
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
 }
 </style>
 </head>
@@ -235,6 +131,7 @@ footer{padding:28px 6%;text-align:center;background:#fff;color:var(--muted);font
       <button class="btn danger" type="button" onclick="deleteCurrent()">Удалить папку</button>
       <button class="btn primary" type="button" id="saveButton" onclick="saveCurrent()">Сохранить воспоминание</button>
      </div>
+      <div class="actions">
     </div>
    </div>
   </div>
@@ -251,6 +148,14 @@ footer{padding:28px 6%;text-align:center;background:#fff;color:var(--muted);font
   <div class="archive-grid" id="archiveGrid">
    <p class="empty">Войдите в аккаунт, чтобы увидеть свои воспоминания.</p>
   </div>
+   <div class="section-heading" style="margin-top:55px">
+  <div class="eyebrow">03 / SHARED MEMORIES</div>
+  <h2>Со мной поделились</h2>
+  <p>Воспоминания, которыми поделились другие пользователи.</p>
+</div>
+<div class="archive-grid" id="sharedArchiveGrid">
+  <p class="empty">Пока с вами никто не поделился воспоминаниями.</p>
+</div>
  </div>
 </section>
 
@@ -309,6 +214,8 @@ const colors = ["#29465f","#426d8e","#647b8b","#52645b","#766b61","#6c6d80","#38
 let selectedColor = colors[0];
 let currentUser = null;
 let folders = [];
+let sharedMemories = [];
+let myShares = [];
 let currentId = null;
 let currentFiles = [];
 let authMode = "login";
@@ -356,28 +263,62 @@ function goToStudio() {
 }
 
 async function loadMemories() {
- if (!currentUser) return;
- const {data,error} = await supabaseClient
-  .from("memories")
-  .select("*")
-  .order("created_at",{ascending:false});
+  if (!currentUser) return;
 
- if (error) {
-  toast("Не удалось загрузить воспоминания");
-  console.error(error);
-  return;
- }
+  const { data, error } = await supabaseClient
+    .from("memories")
+    .select("*")
+    .order("created_at", { ascending: false });
 
- folders = data || [];
- renderFolders();
- renderArchive();
- if (currentId) {
-  const selected = folders.find(item => item.id === currentId);
-  if (selected) openFolder(selected.id);
-  else openFolder(null);
- }
+  if (error) {
+    toast("Не удалось загрузить воспоминания");
+    console.error(error);
+    return;
+  }
+
+  folders = data || [];
+
+  const { data: receivedShares, error: receivedError } =
+    await supabaseClient
+      .from("memory_shares")
+      .select("memory_id, owner_id, created_at")
+      .eq("shared_with", currentUser.id);
+
+  if (receivedError) {
+    console.error(receivedError);
+  }
+
+  const sharedIds = (receivedShares || []).map(item => item.memory_id);
+
+  if (sharedIds.length) {
+    const { data: sharedData, error: sharedError } =
+      await supabaseClient
+        .from("memories")
+        .select("*")
+        .in("id", sharedIds);
+
+    if (sharedError) {
+      console.error(sharedError);
+    }
+
+    sharedMemories = (sharedData || []).map(memory => ({
+      ...memory,
+      isShared: true
+    }));
+  } else {
+    sharedMemories = [];
+  }
+
+  renderFolders();
+  renderArchive();
+  renderSharedArchive();
+
+  if (currentId) {
+    const selected = folders.find(item => item.id === currentId);
+    if (selected) openFolder(selected.id);
+    else openFolder(null);
+  }
 }
-
 function renderFolders() {
  $("#folderList").innerHTML = folders.length
   ? folders.map(folder => `
@@ -680,40 +621,224 @@ async function deleteCurrent() {
  toast("Папка удалена");
 }
 
-$("#archiveGrid").addEventListener("click",async event => {
- const card = event.target.closest("[data-memory]");
- if (!card) return;
+$("#archiveGrid").addEventListener("click", async event => {
+  const card = event.target.closest("[data-memory]");
+  if (!card) return;
 
- const folder = folders.find(item => item.id === card.dataset.memory);
- if (!folder) return;
+  const folder = folders.find(item => item.id === card.dataset.memory);
+  if (!folder) return;
 
- $("#memoryTitle").textContent = folder.name;
- $("#memoryDate").textContent = formatDate(folder.created_at);
- $("#memoryText").textContent = folder.description || "Описание отсутствует.";
- $("#memoryMood").textContent = folder.mood ? "Настроение: " + folder.mood : "";
- $("#memorySong").textContent = folder.song_info ? "Музыка: " + folder.song_info : "";
+  await showMemory(folder);
+});
+  $("#sharedArchiveGrid").addEventListener("click", async event => {
+  const card = event.target.closest("[data-shared-memory]");
+  if (!card) return;
 
- const photo = (folder.files || []).find(file => file.type.startsWith("image/"));
- const photoUrl = photo ? await getFileUrl(photo.path) : "";
- $("#memoryPhoto").style.backgroundImage = photoUrl ? `url("${photoUrl}")` : "";
- $("#memoryPhoto").textContent = photoUrl ? "" : "ARTTECH GENESIS";
+  const memory = sharedMemories.find(
+    item => item.id === card.dataset.sharedMemory
+  );
 
- const media = await Promise.all((folder.files || []).map(async file => {
-  const url = await getFileUrl(file.path);
-  if (file.type.startsWith("image/")) return `<img src="${url}" alt="">`;
-  if (file.type.startsWith("video/")) return `<video src="${url}" controls></video>`;
-  if (file.type.startsWith("audio/")) return `<audio src="${url}" controls></audio>`;
-  return "";
- }));
+  if (memory) await showMemory(memory);
+});
+async function shareCurrentMemory() {
+  if (!currentUser || !currentId) {
+    toast("Сначала выберите воспоминание");
+    return;
+  }
 
- const song = folder.song_url
-  ? `<a href="${escapeHTML(folder.song_url)}" target="_blank" rel="noopener" class="btn small">Открыть музыку</a>`
-  : "";
+  const email = $("#shareEmail").value.trim().toLowerCase();
 
- $("#memoryFiles").innerHTML = media.join("") + song;
- $("#memoryModal").classList.add("open");
+  if (!email) {
+    toast("Введите электронную почту");
+    return;
+  }
+
+  const button = document.querySelector(
+    ".share-panel button"
+  );
+
+  button.disabled = true;
+  button.textContent = "Отправка...";
+
+  try {
+    const { error } = await supabaseClient.rpc(
+      "share_memory_with_email",
+      {
+        p_memory_id: currentId,
+        p_email: email
+      }
+    );
+
+    if (error) throw error;
+
+    $("#shareEmail").value = "";
+
+    toast("Доступ успешно предоставлен");
+    await loadMyShares();
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Не удалось поделиться");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Поделиться воспоминанием";
+  }
+}
+
+async function loadMyShares() {
+  if (!currentUser || !currentId) return;
+
+  const { data, error } = await supabaseClient
+    .from("memory_shares")
+    .select("*")
+    .eq("memory_id", currentId)
+    .eq("owner_id", currentUser.id);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  myShares = data || [];
+  renderMyShares();
+}
+
+function renderMyShares() {
+  const container = $("#shareList");
+  if (!container) return;
+
+  if (!myShares.length) {
+    container.innerHTML =
+      '<p style="font-size:12px;color:var(--muted)">Доступ пока никому не предоставлен.</p>';
+    return;
+  }
+
+  container.innerHTML = myShares.map(share => `
+    <div class="share-item">
+      <span>${escapeHTML(share.shared_email)}</span>
+      <button
+        class="btn small danger"
+        type="button"
+        data-revoke="${share.id}">
+        Отозвать
+      </button>
+    </div>
+  `).join("");
+}
+
+$("#shareList").addEventListener("click", async event => {
+  const button = event.target.closest("[data-revoke]");
+  if (!button) return;
+
+  if (!confirm("Отозвать доступ к этому воспоминанию?")) return;
+
+  button.disabled = true;
+
+  const { error } = await supabaseClient.rpc(
+    "revoke_memory_share",
+    {
+      p_share_id: button.dataset.revoke
+    }
+  );
+
+  if (error) {
+    console.error(error);
+    toast("Не удалось отозвать доступ");
+    button.disabled = false;
+    return;
+  }
+
+  toast("Доступ отозван");
+  await loadMyShares();
 });
 
+async function renderSharedArchive() {
+  const container = $("#sharedArchiveGrid");
+  if (!container) return;
+
+  if (!currentUser || !sharedMemories.length) {
+    container.innerHTML =
+      '<p class="empty">Пока с вами никто не поделился воспоминаниями.</p>';
+    return;
+  }
+
+  const cards = await Promise.all(
+    sharedMemories.map(async memory => {
+      const photo = (memory.files || []).find(file =>
+        file.type?.startsWith("image/")
+      );
+
+      const imageUrl = photo
+        ? await getFileUrl(photo.path)
+        : "";
+
+      return `
+        <article class="day-card" data-shared-memory="${memory.id}">
+          <div class="day-cover"
+            style="${
+              imageUrl
+                ? `background-image:url('${imageUrl}')`
+                : `background-color:${escapeHTML(memory.color)}`
+            }">
+            ${imageUrl ? "" : "▤"}
+          </div>
+          <div class="day-info">
+            <h3>${escapeHTML(memory.name)}</h3>
+            <p>${formatDate(memory.created_at)}</p>
+            <span class="shared-label">ДОСТУП ПО ССЫЛКЕ</span>
+            <div class="day-preview">
+              ${escapeHTML((memory.description || "Воспоминание").slice(0, 100))}
+            </div>
+          </div>
+        </article>
+      `;
+    })
+  );
+
+  container.innerHTML = cards.join("");
+}
+  async function showMemory(folder) {
+  $("#memoryTitle").textContent = folder.name;
+  $("#memoryDate").textContent = formatDate(folder.created_at);
+  $("#memoryText").textContent = folder.description || "Описание отсутствует.";
+  $("#memoryMood").textContent = folder.mood ? "Настроение: " + folder.mood : "";
+  $("#memorySong").textContent = folder.song_info ? "Музыка: " + folder.song_info : "";
+
+  const photo = (folder.files || []).find(file =>
+    file.type?.startsWith("image/")
+  );
+
+  const photoUrl = photo ? await getFileUrl(photo.path) : "";
+
+  $("#memoryPhoto").style.backgroundImage =
+    photoUrl ? `url("${photoUrl}")` : "";
+
+  $("#memoryPhoto").textContent =
+    photoUrl ? "" : "ARTTECH GENESIS";
+
+  const media = await Promise.all(
+    (folder.files || []).map(async file => {
+      const url = await getFileUrl(file.path);
+
+      if (file.type?.startsWith("image/"))
+        return `<img src="${url}" alt="">`;
+
+      if (file.type?.startsWith("video/"))
+        return `<video src="${url}" controls></video>`;
+
+      if (file.type?.startsWith("audio/"))
+        return `<audio src="${url}" controls></audio>`;
+
+      return "";
+    })
+  );
+
+  const song = folder.song_url
+    ? `<a href="${escapeHTML(folder.song_url)}" target="_blank" rel="noopener" class="btn small">Открыть музыку</a>`
+    : "";
+
+  $("#memoryFiles").innerHTML = media.join("") + song;
+  $("#memoryModal").classList.add("open");
+}
 function openAuth() {
  switchAuth("login");
  $("#authModal").classList.add("open");
