@@ -529,7 +529,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, 
 });
   async function searchYouTubeSongs(query) {
   const { data, error } = await supabaseClient.functions.invoke(
-    "youtube-search",
+    "rapid-responder",
     {
       body: { query }
     }
