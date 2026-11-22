@@ -444,6 +444,24 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, 
     detectSessionInUrl: true
   }
 });
+  async function searchYouTubeSongs(query) {
+  const { data, error } = await supabaseClient.functions.invoke(
+    "youtube-search",
+    {
+      body: { query }
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (data?.error) {
+    throw new Error(data.error);
+  }
+
+  return data.songs || [];
+}
 const $ = selector => document.querySelector(selector);
 
 let currentUser = null;
