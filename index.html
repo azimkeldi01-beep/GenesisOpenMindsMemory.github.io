@@ -541,56 +541,67 @@ $("#songSearchButton").addEventListener("click", async () => {
 
   if (!query) {
     $("#songSearchResults").innerHTML =
-      '<p class="notice">Введите название песни или исполнителя.</p>';
+      '<p class="notice">Введите название песни.</p>';
     return;
   }
 
   const button = $("#songSearchButton");
-  button.disabled = true;
+  const results = $("#songSearchResults");
 
-  $("#songSearchResults").innerHTML =
-    '<p class="notice">Ищем песни...</p>';
+  button.disabled = true;
+  button.textContent = "Ищем...";
+  results.innerHTML = '<p class="notice">Ищем песни...</p>';
 
   try {
     const songs = await searchYouTubeSongs(query);
+
     youtubeSearchResults = songs;
 
-    if (!songs.length) {
-      $("#songSearchResults").innerHTML =
-        '<p class="notice">Ничего не найдено.</p>';
+    if (songs.length === 0) {
+      results.innerHTML =
+        '<p class="notice">Песни не найдены.</p>';
       return;
     }
 
-    $("#songSearchResults").innerHTML = songs.map(song => `
+    results.innerHTML = songs.map((song, index) => `
       <div class="song-result">
-        <img src="${escapeHTML(song.thumbnail || "")}" alt="">
+        <img
+          src="${escapeHTML(song.thumbnail || "")}"
+          alt=""
+        >
+
         <div class="song-result-info">
           <strong>${escapeHTML(song.title)}</strong>
           <small>${escapeHTML(song.artist)}</small>
         </div>
+
         <button
           type="button"
           class="btn secondary"
-          data-select-song="${escapeHTML(song.id)}"
-        >Выбрать</button>
+          data-select-song="${index}"
+        >
+          Выбрать
+        </button>
       </div>
     `).join("");
 
   } catch (error) {
-    $("#songSearchResults").innerHTML =
-      `<p class="notice">${escapeHTML(error.message || "Ошибка поиска.")}</p>`;
+    results.innerHTML =
+      `<p class="notice">${escapeHTML(error.message)}</p>`;
   } finally {
     button.disabled = false;
+    button.textContent = "Найти";
   }
 });
 
 $("#songSearchResults").addEventListener("click", event => {
   const button = event.target.closest("[data-select-song]");
+
   if (!button) return;
 
-  const song = youtubeSearchResults.find(
-    item => item.id === button.dataset.selectSong
-  );
+  const song = youtubeSearchResults[
+    Number(button.dataset.selectSong)
+  ];
 
   if (!song) return;
 
