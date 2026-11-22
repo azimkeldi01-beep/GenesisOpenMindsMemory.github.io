@@ -674,7 +674,6 @@ function openFolder(id) {
   $("#shareEmail").value = "";
   $("#shareStatus").textContent = "";
   loadMyShares();
-  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function resetForm() {
@@ -1157,7 +1156,7 @@ function renderSharedItems() {
       <strong>${icon} ${escapeHTML(item.name)}</strong>
       <small>${escapeHTML(meta)}</small>
       <div class="actions">
-        ${item.item_type === "folder" ? `<button class="btn secondary" data-enter-shared-folder="${escapeHTML(item.id)}">Открыть</button>` : ""}
+        ${item.item_type === "folder" ? `<button type="button" class="btn secondary" data-enter-shared-folder="${escapeHTML(item.id)}">Открыть</button>` : ""}
         ${item.item_type === "file" ? `<button class="btn secondary" data-download-shared-file="${escapeHTML(item.id)}">Открыть файл</button>` : ""}
         ${item.item_type === "note" ? `<button class="btn secondary" data-view-shared-note="${escapeHTML(item.id)}">Читать</button>` : ""}
         <button class="btn danger" data-delete-shared-item="${escapeHTML(item.id)}">Удалить</button>
@@ -1178,10 +1177,21 @@ $("#sharedItems").addEventListener("click", async event => {
   const view = event.target.closest("[data-view-shared-note]");
   const download = event.target.closest("[data-download-shared-file]");
   const remove = event.target.closest("[data-delete-shared-item]");
-  if (enter) {
-    activeSharedParent = enter.dataset.enterSharedFolder;
-    renderSharedItems();
-    return;
+if (enter) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const previousScroll = window.scrollY;
+
+  activeSharedParent = enter.dataset.enterSharedFolder;
+  renderSharedItems();
+
+  requestAnimationFrame(() => {
+    window.scrollTo(0, previousScroll);
+  });
+
+  return;
+}
   }
   if (view) {
     const item = sharedFolderItems.find(entry => entry.id === view.dataset.viewSharedNote);
