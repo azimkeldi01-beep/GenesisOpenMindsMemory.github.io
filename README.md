@@ -6,7 +6,6 @@
 <title>Genesis — Open Minds Memory</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-<style>
 :root {
   --bg: #f2f8fa;
   --panel: #ffffff;
@@ -360,7 +359,6 @@ a {
     padding: 24px;
   }
 }
-</style>
 </style>
 </head>
 <body>
