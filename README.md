@@ -299,7 +299,7 @@ footer{padding:28px 6%;text-align:center;background:#fff;color:var(--muted);font
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = "https://ydrzlazhucdlvvyjisnm.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://ydrzlazhucdlvvyjisnm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_l_aik6ePDy4GFPZRwBH1ZQ_9oSb_Dji";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
