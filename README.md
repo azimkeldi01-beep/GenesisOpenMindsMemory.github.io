@@ -437,8 +437,13 @@ footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font
 <script>
 const SUPABASE_URL = "https://ydrzlazhucdlvvyjisnm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_l_aik6ePDy4GFPZRwBH1ZQ_9oSb_Dji";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 const $ = selector => document.querySelector(selector);
 
 let currentUser = null;
