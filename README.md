@@ -1197,10 +1197,10 @@ async function deleteSharedItem(id) {
   const descendants = sharedFolderItems.filter(entry=>idsToDelete.has(entry.id));
   const paths = descendants.map(entry=>entry.storage_path).filter(Boolean);
   if (paths.length) {
-    const { error:storageError } = await supabase.storage.from("shared-folder-files").remove(paths);
+    const { error:storageError } = await .storage.from("shared-folder-files").remove(paths);
     if (storageError) return status("sharedFolderStatus",storageError.message,true);
   }
-  const { error } = await supabase.from("shared_folder_items").delete().eq("id",id);
+  const { error } = await .from("shared_folder_items").delete().eq("id",id);
   if (error) status("sharedFolderStatus",error.message,true);
   else {
     status("sharedFolderStatus","Материал удалён.");
