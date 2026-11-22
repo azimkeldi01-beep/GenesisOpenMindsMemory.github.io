@@ -1192,7 +1192,6 @@ if (enter) {
 
   return;
 }
-  }
   if (view) {
     const item = sharedFolderItems.find(entry => entry.id === view.dataset.viewSharedNote);
     if (item) alert(`${item.name}\n\n${item.content || ""}`);
