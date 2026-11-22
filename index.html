@@ -208,7 +208,67 @@ footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font
 .shared-invite{display:flex;gap:8px;align-items:center;margin-top:12px}
 .shared-invite input{flex:1;min-width:0}
 @media(max-width:700px){.shared-folder-layout{grid-template-columns:1fr}.shared-items{grid-template-columns:1fr}.shared-invite{flex-direction:column;align-items:stretch}}
+.song-results {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
 
+.song-result {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.song-result img {
+  width: 88px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.song-result-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.song-result-info strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.song-result-info small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.song-result button {
+  flex-shrink: 0;
+}
+
+.song-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 12px;
+}
+
+.song-player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+}
 </style>
 </head>
 
@@ -294,9 +354,32 @@ footer{border-top:1px solid var(--border);padding:25px 0;color:var(--muted);font
           <button type="button" class="color" data-color="#344054" style="background:#344054"></button>
         </div>
 
-        <label>Музыка или ссылка (необязательно)</label>
-        <input id="songUrl" type="url" placeholder="https://...">
-        <input id="songInfo" placeholder="Название песни или исполнителя">
+       <label>🎵 Музыкальное сопровождение</label>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+  <input
+    id="songSearchInput"
+    type="search"
+    placeholder="Название песни или исполнитель..."
+    style="flex:1;min-width:180px"
+  >
+  <button
+    type="button"
+    class="btn primary"
+    id="songSearchButton"
+  >
+    Найти
+  </button>
+</div>
+
+<div id="songSearchResults" class="song-results"></div>
+
+<div id="selectedSong" class="notice">
+  Музыка пока не выбрана.
+</div>
+
+<input id="songUrl" type="hidden">
+<input id="songInfo" type="hidden">
 
         <label>Фотографии и видео</label>
         <input id="memoryFiles" type="file" multiple accept="image/*,video/*">
@@ -451,7 +534,74 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, 
       body: { query }
     }
   );
+let youtubeSearchResults = [];
 
+$("#songSearchButton").addEventListener("click", async () => {
+  const query = $("#songSearchInput").value.trim();
+
+  if (!query) {
+    $("#songSearchResults").innerHTML =
+      '<p class="notice">Введите название песни или исполнителя.</p>';
+    return;
+  }
+
+  const button = $("#songSearchButton");
+  button.disabled = true;
+
+  $("#songSearchResults").innerHTML =
+    '<p class="notice">Ищем песни...</p>';
+
+  try {
+    const songs = await searchYouTubeSongs(query);
+    youtubeSearchResults = songs;
+
+    if (!songs.length) {
+      $("#songSearchResults").innerHTML =
+        '<p class="notice">Ничего не найдено.</p>';
+      return;
+    }
+
+    $("#songSearchResults").innerHTML = songs.map(song => `
+      <div class="song-result">
+        <img src="${escapeHTML(song.thumbnail || "")}" alt="">
+        <div class="song-result-info">
+          <strong>${escapeHTML(song.title)}</strong>
+          <small>${escapeHTML(song.artist)}</small>
+        </div>
+        <button
+          type="button"
+          class="btn secondary"
+          data-select-song="${escapeHTML(song.id)}"
+        >Выбрать</button>
+      </div>
+    `).join("");
+
+  } catch (error) {
+    $("#songSearchResults").innerHTML =
+      `<p class="notice">${escapeHTML(error.message || "Ошибка поиска.")}</p>`;
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("#songSearchResults").addEventListener("click", event => {
+  const button = event.target.closest("[data-select-song]");
+  if (!button) return;
+
+  const song = youtubeSearchResults.find(
+    item => item.id === button.dataset.selectSong
+  );
+
+  if (!song) return;
+
+  $("#songUrl").value = song.url;
+  $("#songInfo").value = `${song.title} — ${song.artist}`;
+
+  $("#selectedSong").textContent =
+    `✓ Выбрано: ${song.title} — ${song.artist}`;
+
+  $("#songSearchResults").innerHTML = "";
+});
   if (error) {
     throw new Error(error.message);
   }
@@ -695,6 +845,12 @@ function openFolder(id) {
   $("#memoryDescription").value = memory.description || "";
   $("#songUrl").value = memory.song_url || "";
   $("#songInfo").value = memory.song_info || "";
+  $("#selectedSong").textContent = memory.song_url
+  ? `✓ Выбрано: ${memory.song_info || "Музыка"}`
+  : "Музыка пока не выбрана.";
+
+$("#songSearchInput").value = "";
+$("#songSearchResults").innerHTML = "";
   selectedColor = memory.color || "#4263eb";
   selectedMood = memory.mood || "😊";
 
@@ -712,6 +868,10 @@ function resetForm() {
   currentId = null;
   currentFiles = [];
   $("#memoryForm").reset();
+  $("#selectedSong").textContent = "Музыка пока не выбрана.";
+$("#songSearchInput").value = "";
+$("#songSearchResults").innerHTML = "";
+youtubeSearchResults = [];
   $("#selectedFiles").textContent = "Файлы пока не выбраны.";
   $("#existingFiles").innerHTML = "";
   $("#deleteButton").disabled = true;
@@ -914,9 +1074,43 @@ async function showMemory(memory) {
   $("#viewMeta").textContent =
     `${memory.mood || ""} · ${new Date(memory.created_at).toLocaleDateString("ru-RU")}`;
   $("#viewDescription").textContent = memory.description || "";
-  $("#viewSong").innerHTML = memory.song_url
-    ? `<p class="notice">🎵 ${escapeHTML(memory.song_info || "Музыка")} · <a href="${escapeHTML(memory.song_url)}" target="_blank" rel="noopener">Открыть ссылку</a></p>`
-    : "";
+function getYouTubeVideoId(url) {
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname === "youtu.be") {
+      return parsed.pathname.slice(1);
+    }
+
+    if (
+      parsed.hostname === "youtube.com" ||
+      parsed.hostname.endsWith(".youtube.com")
+    ) {
+      return parsed.searchParams.get("v") ||
+        parsed.pathname.split("/").filter(Boolean).pop();
+    }
+  } catch (error) {}
+
+  return "";
+}
+
+const videoId = getYouTubeVideoId(memory.song_url || "");
+
+$("#viewSong").innerHTML = videoId
+  ? `
+    <div class="notice">
+      🎵 ${escapeHTML(memory.song_info || "Музыка")}
+    </div>
+    <div class="song-player">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}"
+        title="YouTube music player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+  `
+  : "";
 
   $("#viewFiles").innerHTML = "";
   $("#viewSharedNote").textContent = memory.isShared
