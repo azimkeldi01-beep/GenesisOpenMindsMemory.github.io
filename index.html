@@ -1115,7 +1115,7 @@ $("#viewSong").innerHTML = videoId
 
   for (const file of (memory.files || [])) {
     if (!file.path) continue;
-
+ 
     try {
       const url = await getFileUrl(file.path);
       const element = document.createElement(
